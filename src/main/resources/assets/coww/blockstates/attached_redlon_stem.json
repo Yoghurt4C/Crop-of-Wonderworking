@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=west": { "model": "coww:block/redlon/attached_redlon_stem" },
+        "facing=east": { "model": "coww:block/redlon/attached_redlon_stem", "y": 180 },
+        "facing=north": { "model": "coww:block/redlon/attached_redlon_stem", "y": 90 },
+        "facing=south": { "model": "coww:block/redlon/attached_redlon_stem", "y": 270 }
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "block/stem_fruit",
+    "textures": {
+        "stem": "coww:block/redlon/redlon_stem_disconnected",
+        "upperstem": "coww:block/redlon/attached_redlon_stem"
+    }
+}

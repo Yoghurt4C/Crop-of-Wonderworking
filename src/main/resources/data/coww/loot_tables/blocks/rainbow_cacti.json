@@ -1,0 +1,59 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:tag",
+              "functions": [
+                {
+                  "function": "minecraft:set_count",
+                  "count": {
+                    "min": 1.0,
+                    "max": 2.0,
+                    "type": "minecraft:uniform"
+                  }
+                }
+              ],
+              "name": "c:dye_any",
+              "expand": true,
+              "conditions": [
+                {
+                  "condition": "alternative",
+                  "terms": [
+                    {
+                      "condition": "minecraft:location_check",
+                      "offsetY": -1,
+                      "predicate": {
+                        "block": {
+                          "block": "coww:rainbow_cacti"
+                        }
+                      }
+                    },
+                    {
+                      "condition": "minecraft:location_check",
+                      "offsetY": -1,
+                      "predicate": {
+                        "block": {
+                          "block": "air"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "coww:rainbow_cacti"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

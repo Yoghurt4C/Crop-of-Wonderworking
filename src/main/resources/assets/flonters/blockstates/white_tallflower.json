@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "half=lower": { "model": "flonters:block/white_tallflower_bottom" },
-        "half=upper":    { "model": "flonters:block/white_tallflower_top" }
-    }
-}

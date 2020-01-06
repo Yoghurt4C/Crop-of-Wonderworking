@@ -1,0 +1,14 @@
+{
+  "type": "coww:cauldron",
+  "input": [
+    {
+      "item": "minecraft:dirt"
+    }
+  ],
+  "catalyst": {
+    "item": "minecraft:cactus"
+  },
+  "result": {
+    "item": "minecraft:diamond"
+  }
+}

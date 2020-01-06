@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "mods.coww.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "CropBlockMixin",
+    "RedstoneBlockMixin",
+    "ItemEntityMixin",
+    "MinecraftClientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

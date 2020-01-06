@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "age=0": { "model": "coww:block/lazullia/lazullia_stage0" },
+        "age=1": { "model": "coww:block/lazullia/lazullia_stage1" },
+        "age=2": { "model": "coww:block/lazullia/lazullia_stage2" },
+        "age=3": { "model": "coww:block/lazullia/lazullia_stage3" },
+        "age=4": { "model": "coww:block/lazullia/lazullia_stage4" },
+        "age=5": { "model": "coww:block/lazullia/lazullia_stage5" },
+        "age=6": { "model": "coww:block/lazullia/lazullia_stage6" },
+        "age=7": { "model": "coww:block/lazullia/lazullia_stage7" }
+    }
+}

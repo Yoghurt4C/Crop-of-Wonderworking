@@ -1,0 +1,6 @@
+{
+    "parent": "block/cross",
+    "textures": {
+        "cross": "coww:block/sweed/sweed_2"
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "hoes_mad": {
+    "category": "block",
+    "sounds": [
+      "coww:hoes_mad1",
+      "coww:hoes_mad2",
+      "coww:hoes_mad3",
+      "coww:hoes_mad4"
+    ],
+    "subtitle": "subtitle.coww.hoes_mad"
+  }
+}

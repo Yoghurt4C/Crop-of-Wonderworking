@@ -1,0 +1,6 @@
+{
+    "parent": "block/stem_growth6",
+    "textures": {
+        "stem": "coww:block/redlon/redlon_stem_disconnected"
+    }
+}

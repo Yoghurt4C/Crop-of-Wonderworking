@@ -1,6 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "flonters:block/light_gray_tallflower_top"
-    }
-}
