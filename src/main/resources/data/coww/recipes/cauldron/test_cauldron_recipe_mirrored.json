@@ -8,6 +8,7 @@
       "item": "minecraft:dirt"
     }
   ],
+  "fluid": "minecraft:water",
   "catalyst": {
     "item": "minecraft:cactus"
   },

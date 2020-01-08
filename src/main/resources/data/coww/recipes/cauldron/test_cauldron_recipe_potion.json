@@ -2,14 +2,14 @@
   "type": "coww:cauldron",
   "input": [
     {
-      "item": "minecraft:dirt"
+      "item": "minecraft:diamond"
     }
   ],
-  "fluid": "minecraft:water",
+  "fluid": "minecraft:long_water_breathing",
   "catalyst": {
     "item": "minecraft:cactus"
   },
   "result": {
-    "item": "minecraft:diamond"
+    "item": "minecraft:dirt"
   }
 }

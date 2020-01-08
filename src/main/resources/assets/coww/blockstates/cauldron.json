@@ -1,8 +1,8 @@
 {
     "variants": {
         "level=0": { "model": "coww:block/cauldron" },
-        "level=1": { "model": "coww:block/cauldron_level1" },
-        "level=2": { "model": "coww:block/cauldron_level2" },
-        "level=3": { "model": "coww:block/cauldron_level3" }
+        "level=1": { "model": "coww:block/cauldron" },
+        "level=2": { "model": "coww:block/cauldron" },
+        "level=3": { "model": "coww:block/cauldron" }
     }
 }

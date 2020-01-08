@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class CauldronRecipeSerializer implements RecipeSerializer<CauldronRecipe> {
     private static final String INPUT_KEY = "input";
+    private static final String FLUID_KEY = "fluid";
     private static final String CATALYST_KEY = "catalyst";
     private static final String RESULT_KEY = "result";
     private static final String ITEM_KEY = "item";
@@ -23,11 +24,14 @@ public class CauldronRecipeSerializer implements RecipeSerializer<CauldronRecipe
     public CauldronRecipe read(Identifier id, JsonObject json) {
         final Item result;
         int count;
+        final String fluid;
         final Ingredient catalyst;
         final ArrayList<Ingredient> ingredients = getIngredientList(json);
 
         // get item result && count
-        if(json.get(RESULT_KEY).isJsonObject()) {
+        if(json.get(RESULT_KEY)==null) {
+            throw new JsonSyntaxException("Expected a JsonObject as \"" + RESULT_KEY + "\", got ... nothing" + "!\n" + prettyPrintJson(json));
+        } else if(json.get(RESULT_KEY).isJsonObject()) {
             final JsonObject resultObject = json.getAsJsonObject(RESULT_KEY);
             result = getItem(resultObject);
             count = getCount(resultObject);
@@ -35,11 +39,21 @@ public class CauldronRecipeSerializer implements RecipeSerializer<CauldronRecipe
             throw new JsonSyntaxException("Expected a JsonObject as \"" + RESULT_KEY + "\", got " + json.get(INPUT_KEY).getClass() + "\n" + prettyPrintJson(json));
         }
 
-        catalyst=Ingredient.fromJson(json.get(CATALYST_KEY));
+
+        fluid=getFluid(json.getAsJsonObject());
+
+        if(json.get(CATALYST_KEY)==null) {
+            throw new JsonSyntaxException("Expected a JsonObject as \"" + CATALYST_KEY + "\", got ... nothing" + "!\n" + prettyPrintJson(json));
+        } else if(json.get(CATALYST_KEY).isJsonObject()){
+            final JsonObject catalystObject = json.getAsJsonObject(CATALYST_KEY);
+            catalyst = Ingredient.fromJson(catalystObject);
+        } else {
+            throw new JsonSyntaxException("Expected a JsonObject as \"" + CATALYST_KEY + "\", got " + json.get(INPUT_KEY).getClass() + "\n" + prettyPrintJson(json));
+        }
 
         verifyIngredientsList(ingredients, json);
 
-        return new CauldronRecipe(ingredients, catalyst, new ItemStack(result, count), id);
+        return new CauldronRecipe(ingredients, fluid, catalyst, new ItemStack(result, count), id);
     }
 
     /**
@@ -127,6 +141,24 @@ public class CauldronRecipeSerializer implements RecipeSerializer<CauldronRecipe
         return result;
     }
 
+    private String getFluid(JsonObject fluidJson) {
+        String fluid;
+
+        if (fluidJson.get(FLUID_KEY)==null) {
+            throw new JsonSyntaxException("\"" + FLUID_KEY + "\" needs to be a String JsonPrimitive, found... nothing" + "!\n" + prettyPrintJson(fluidJson));
+        } else if (fluidJson.get(FLUID_KEY).isJsonPrimitive()) {
+            final JsonPrimitive fluidPrimitive = fluidJson.getAsJsonPrimitive(FLUID_KEY);
+            if (fluidPrimitive.isString()) {
+                fluid = fluidPrimitive.getAsString();
+            } else {
+                throw new IllegalArgumentException("Expected "+"\"" + FLUID_KEY + "\" to be a String, got " + fluidPrimitive.getAsString() + "\n" + prettyPrintJson(fluidJson));
+            }
+        } else {
+            throw new JsonSyntaxException("\"" + FLUID_KEY + "\" needs to be a String JsonPrimitive, found " + fluidJson.getClass() + "!\n" + prettyPrintJson(fluidJson));
+        }
+        return fluid;
+    }
+
     /**
      * Retrieves a list of required {@link Ingredient}s from the given JsonObject.
      * If the JsonObject doesn't have a proper list, an exception is thrown.
@@ -155,6 +187,7 @@ public class CauldronRecipeSerializer implements RecipeSerializer<CauldronRecipe
     public void write(PacketByteBuf buf, CauldronRecipe recipe) {
         buf.writeInt(recipe.getIngredients().size());
         recipe.getIngredients().forEach(ingredient -> ingredient.write(buf));
+        buf.writeString(recipe.getFluid());
         recipe.getCatalyst().write(buf);
         buf.writeItemStack(recipe.getOutput());
     }
@@ -167,8 +200,9 @@ public class CauldronRecipeSerializer implements RecipeSerializer<CauldronRecipe
         for(int i = 0; i < size-1; i++) {
             ingredients.add(Ingredient.fromPacket(buf));
         }
+        final String fluid = buf.readString();
         final Ingredient catalyst = Ingredient.fromPacket(buf);
 
-        return new CauldronRecipe(ingredients, catalyst, buf.readItemStack(), id);
+        return new CauldronRecipe(ingredients, fluid, catalyst, buf.readItemStack(), id);
     }
 }

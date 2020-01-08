@@ -18,26 +18,30 @@ import java.util.List;
 
 public class CauldronRecipe implements Recipe<Inventory> {
     private final List<Ingredient> ingredients;
+    private final String fluid;
     private final Ingredient catalyst;
     private final ItemStack result;
     private final Identifier recipeId;
 
-    CauldronRecipe(Ingredient ingredient, Ingredient catalyst, ItemStack result, Identifier recipeId) {
+    CauldronRecipe(Ingredient ingredient, String fluid, Ingredient catalyst, ItemStack result, Identifier recipeId) {
         ingredients = Collections.singletonList(ingredient);
+        this.fluid = fluid;
         this.catalyst = catalyst;
         this.result = result;
         this.recipeId = recipeId;
     }
 
-    CauldronRecipe(ItemStack result, Ingredient catalyst, Identifier recipeId, Ingredient... ingredients) {
+    CauldronRecipe(ItemStack result, String fluid, Ingredient catalyst, Identifier recipeId, Ingredient... ingredients) {
         this.ingredients = Arrays.asList(ingredients);
+        this.fluid = fluid;
         this.catalyst = catalyst;
         this.result = result;
         this.recipeId = recipeId;
     }
 
-    CauldronRecipe(List<Ingredient> ingredients, Ingredient catalyst, ItemStack result, Identifier recipeId) {
+    CauldronRecipe(List<Ingredient> ingredients,  String fluid, Ingredient catalyst, ItemStack result, Identifier recipeId) {
         this.ingredients = ingredients;
+        this.fluid = fluid;
         this.catalyst = catalyst;
         this.result = result;
         this.recipeId = recipeId;
@@ -114,6 +118,8 @@ public class CauldronRecipe implements Recipe<Inventory> {
     public boolean fits(int var1, int var2) {
         return false;
     }
+
+    public String getFluid() { return fluid; }
 
     public Ingredient getCatalyst(){
         return catalyst;

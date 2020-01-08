@@ -1,0 +1,60 @@
+{
+  "type": "coww:cauldron",
+  "input": [
+    {
+      "tag": "c:dye_black"
+    },
+    {
+      "tag": "c:dye_blue"
+    },
+    {
+      "tag": "c:dye_brown"
+    },
+    {
+      "tag": "c:dye_cyan"
+    },
+    {
+      "tag": "c:dye_gray"
+    },
+    {
+      "tag": "c:dye_green"
+    },
+    {
+      "tag": "c:dye_light_blue"
+    },
+    {
+      "tag": "c:dye_light_gray"
+    },
+    {
+      "tag": "c:dye_lime"
+    },
+    {
+      "tag": "c:dye_magenta"
+    },
+    {
+      "tag": "c:dye_orange"
+    },
+    {
+      "tag": "c:dye_pink"
+    },
+    {
+      "tag": "c:dye_purple"
+    },
+    {
+      "tag": "c:dye_red"
+    },
+    {
+      "tag": "c:dye_white"
+    },
+    {
+      "tag": "c:dye_yellow"
+    }
+  ],
+  "fluid": "minecraft:water",
+  "catalyst": {
+    "item": "minecraft:cactus"
+  },
+  "result": {
+    "item": "coww:rainbow_cacti"
+  }
+}

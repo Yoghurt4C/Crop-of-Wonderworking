@@ -14,8 +14,7 @@ public interface ItemFluidInterface {
     ItemStack getFull(Fluid fluid);
 
     Fluid getFluid(ItemStack itemStack);
-
-    @Accessor("HitResult")
+    
     HitResult rayTrace(World world, PlayerEntity player, RayTraceContext.FluidHandling fluidHandling);
 
 }

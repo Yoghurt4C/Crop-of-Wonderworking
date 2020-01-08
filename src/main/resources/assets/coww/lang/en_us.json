@@ -10,6 +10,8 @@
 
     "subtitle.coww.hoes_mad": "Hoes Mad",
 
+    "cauldron.coww.fluid_mismatch": "Wrong Fluid!",
+    "cauldron.coww.fluid_mismatch_ps": "Expected",
     "cauldron.coww.fill_last_recipe": "Right click with an empty hand to",
     "cauldron.coww.fill_last_recipe_ps": "fill in the previous recipe"
 }

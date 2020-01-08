@@ -1,9 +1,9 @@
 package mods.coww.rendering;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mods.coww.client.CropWonderWorkingClient;
 import mods.coww.entity.CropWonderWorkingCauldronBlockEntity;
-import mods.coww.entity.CropWonderWorkingCauldronInventory;
 import mods.coww.recipes.CauldronRecipe;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -12,11 +12,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.item.FishBucketItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -51,17 +53,32 @@ public class CauldronHUD extends DrawableHelper {
                     BlockPos bpos = pos.getType() == HitResult.Type.BLOCK ? ((BlockHitResult) pos).getBlockPos() : null;
                     BlockState state = bpos != null ? client.world.getBlockState(bpos) : null;
                     Block block = state == null ? null : state.getBlock();
-                    BlockEntity tile = bpos != null ? client.world.getBlockEntity(bpos) : null;
-                    if (tile instanceof CropWonderWorkingCauldronBlockEntity) {
-                        Inventory inventory = (CropWonderWorkingCauldronInventory) tile;
-                        CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) tile;
+                    BlockEntity blockEntity = bpos != null ? client.world.getBlockEntity(bpos) : null;
+                    if (blockEntity instanceof CropWonderWorkingCauldronBlockEntity) {
+                        CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) blockEntity;
+                        String fluidString = (cauldron.fluid.getInvFluid(0).fluidKey.toString().split(" "))[2].replace("}","");
+                        ClientPlayerEntity player = client.player;
+                        if (client.player != null && cauldron.fluid.getInvFluid(0).fluidKey==FluidKeys.EMPTY
+                                ||cauldron.fluid.getInvFluid(0).fluidKey==FluidKeys.WATER && cauldron.getCachedState().get(LEVEL)>3) {
+                            ItemStack pstack = client.player.getMainHandStack();
+                            if (pstack.getItem() instanceof FishBucketItem) {
+                                RenderSystem.pushMatrix();
+                                client.getTextureManager().bindTexture(new Identifier("coww:textures/gui/cauldron_hud.png"));
+                                RenderSystem.enableAlphaTest();
+                                RenderSystem.color4f(1F, 1F, 1F, 1F);
+                                drawTexturedModalRect(xc + 33, yc - 8, 0, 44, 0, 22, 15);
+                                client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.CAULDRON),xc + 56, yc - 8);
+                                RenderSystem.disableAlphaTest();
+                                RenderSystem.popMatrix();
+                            }
+                        }
 
                         float angle = -90;
                         int radius = 24;
                         int items = 0;
-                        if (inventory != null) {
-                            for (int i = 0; i < inventory.getInvSize(); i++) {
-                                if (inventory.getInvStack(i).isEmpty()) {
+                        if (cauldron != null) {
+                            for (int i = 0; i < cauldron.getInvSize(); i++) {
+                                if (cauldron.getInvStack(i).isEmpty()) {
                                     break;
                                 }
                                 items++;
@@ -69,23 +86,34 @@ public class CauldronHUD extends DrawableHelper {
 
                             if (items > 0) {
                                 float anglePer = 360F / items;
-                                final Optional<CauldronRecipe> match = client.world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, inventory, client.world);
+                                final Optional<CauldronRecipe> match = client.world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, cauldron, client.world);
                                 if (match.isPresent()) {
                                     RenderSystem.enableAlphaTest();
                                     RenderSystem.color4f(1F, 1F, 1F, 1F);
-                                    client.getTextureManager().bindTexture(new Identifier("coww:textures/gui/manahud.png"));
-                                    drawTexturedModalRect(xc + radius + 9, yc - 8, 0, 0, 8, 22, 15);
+                                    client.getTextureManager().bindTexture(new Identifier("coww:textures/gui/cauldron_hud.png"));
+                                    if(!match.get().getFluid().equals(fluidString))
+                                    { drawTexturedModalRect(xc + radius + 9, yc - 8, 0, 22, 0, 22, 15); } else
+                                    {drawTexturedModalRect(xc + radius + 9, yc - 8, 0, 0, 0, 22, 15);}
                                     RenderSystem.disableAlphaTest();
 
                                     ItemStack stack = match.get().getOutput();
                                     ItemStack[] cataList = match.get().getCatalyst().getMatchingStacksClient();
                                     ItemStack catalyst = cataList[client.world.random.nextInt(cataList.length)];
+                                    String wrongFluid = I18n.translate("cauldron.coww.fluid_mismatch");
+                                    String wrongFluid_ps = I18n.translate("cauldron.coww.fluid_mismatch_ps") + ": " + toTitleCase(match.get().getFluid().split(":")[1]);
 
                                     client.getItemRenderer().renderGuiItemIcon(stack, xc + radius + 32, yc - 8);
-                                    client.getItemRenderer().renderGuiItemIcon(catalyst, xc + radius + 16, yc + 6);
+                                    if(!match.get().getFluid().equals(fluidString)) {
+                                        RenderSystem.pushMatrix();
+                                        RenderSystem.translated(0,0,200);
+                                        client.textRenderer.drawWithShadow(wrongFluid, xc + radius + 7, yc + 10, 0xFFFFFF);
+                                        client.textRenderer.drawWithShadow(wrongFluid_ps, xc + radius, yc + 20, 0xFFFFFF);
+
+                                    } else {client.getItemRenderer().renderGuiItemIcon(catalyst, xc + radius + 16, yc + 6);
                                     RenderSystem.pushMatrix();
                                     RenderSystem.translated(0,0,200);
                                     client.textRenderer.drawWithShadow("+", xc + radius + 14, yc + 10, 0xFFFFFF);
+                                    }
                                     RenderSystem.popMatrix();
                                 }
 
@@ -93,7 +121,7 @@ public class CauldronHUD extends DrawableHelper {
                                     double xPos = xc + Math.cos(angle * Math.PI / 180D) * radius - 8;
                                     double yPos = yc + Math.sin(angle * Math.PI / 180D) * radius - 8;
                                     RenderSystem.translated(xPos, yPos, 0);
-                                    client.getItemRenderer().renderGuiItemIcon(inventory.getInvStack(i), 0, 0);
+                                    client.getItemRenderer().renderGuiItemIcon(cauldron.getInvStack(i), 0, 0);
                                     RenderSystem.translated(-xPos, -yPos, 0);
                                     angle += anglePer;
                                 }
@@ -117,14 +145,25 @@ public class CauldronHUD extends DrawableHelper {
         }
     }
 
-    public static void drawTexturedModalRect(int x, int y, float z, int u, int v, int offsetX, int offsetY) {
-        float f = 0.00390625F;
+    public static void drawTexturedModalRect(int x, int y, float z, int u, int v, int uMax, int vMax) {
+        float fu = 0.01515F;
+        float fv = 0.0667F;
         Tessellator tessellator = Tessellator.getInstance();
         tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
-        tessellator.getBuffer().vertex(x, y + offsetY, z).texture(u * f, (v + offsetY) * f).next();
-        tessellator.getBuffer().vertex(x + offsetX, y + offsetY, z).texture((u + offsetX) * f, (v + offsetY) * f).next();
-        tessellator.getBuffer().vertex(x + offsetX, y, z).texture((u + offsetX) * f, v * f).next();
-        tessellator.getBuffer().vertex(x, y, z).texture(u * f, v * f).next();
+        tessellator.getBuffer().vertex(x, y + vMax, z).texture(u * fu, (v + vMax) * fv).next();
+        tessellator.getBuffer().vertex(x + uMax, y + vMax, z).texture((u + uMax) * fu, (v + vMax) * fv).next();
+        tessellator.getBuffer().vertex(x + uMax, y, z).texture((u + uMax) * fu, v * fv).next();
+        tessellator.getBuffer().vertex(x, y, z).texture(u * fu, v * fv).next();
         tessellator.draw();
+    }
+
+    public static String toTitleCase(String givenString) {
+        String[] splitString = givenString.split("_");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String string : splitString) {
+            stringBuilder.append(Character.toUpperCase(string.charAt(0)))
+                    .append(string.substring(1)).append(" ");
+        }
+        return stringBuilder.toString().trim();
     }
 }

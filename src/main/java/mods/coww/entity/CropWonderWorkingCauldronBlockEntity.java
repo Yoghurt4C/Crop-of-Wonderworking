@@ -1,24 +1,44 @@
 package mods.coww.entity;
 
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
+import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv;
+import alexiil.mc.lib.attributes.fluid.mixin.api.IBucketItem;
+import alexiil.mc.lib.attributes.fluid.mixin.impl.PotionItemMixin;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import alexiil.mc.lib.attributes.fluid.volume.PotionFluidKey;
+import alexiil.mc.lib.attributes.item.ItemInvUtil;
+import alexiil.mc.lib.attributes.misc.LimitedConsumer;
+import alexiil.mc.lib.attributes.misc.Reference;
 import mods.coww.blocks.CropWonderWorkingCauldronBlock;
 import mods.coww.recipes.CauldronRecipe;
 import mods.coww.registry.CropWonderWorkingBlocks;
+import mods.coww.registry.CropWonderWorkingItems;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.stat.Stats;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
@@ -27,16 +47,21 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Consumer;
 
+import static alexiil.mc.lib.attributes.fluid.FluidVolumeUtil.interactWithTank;
 import static net.minecraft.block.CauldronBlock.LEVEL;
 
 public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements CropWonderWorkingCauldronInventory, BlockEntityClientSerializable, Tickable {
     private static final int[] TOP_SLOTS = new int[]{0,1,2,3};
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(16, ItemStack.EMPTY);
+    //public String fluid = "empty";
+    public SimpleFixedFluidInv fluid = new SimpleFixedFluidInv(1, FluidAmount.BUCKET);
     private List<ItemStack> lastRecipeStacks = null;
     public static ItemStack lastRecipeResult = null;
     public int lastRecipeTimer = 0;
@@ -61,6 +86,7 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
     @Override
     public void fromTag(CompoundTag tag) {
         super.fromTag(tag);
+        fluid.fromTag(tag.getCompound("Fluid"));
         this.lastRecipeTimer=tag.getInt("LastRecipeTimer");
         betterFromTag(tag,items);
     }
@@ -68,6 +94,7 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
+        tag.put("Fluid",fluid.toTag());
         tag.putInt("LastRecipeTimer",this.lastRecipeTimer);
         Inventories.toTag(tag,this.items);
         return tag;
@@ -85,54 +112,25 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
 
     public boolean canExtractInvStack(int slot, ItemStack stack, Direction dir) { return false; }
 
-    public static void matchRecipeInputs(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand){
-        final Inventory inventory = (SidedInventory) world.getBlockEntity(pos);
-        final Optional<CauldronRecipe> match = world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, inventory, world);
+    public void matchRecipeInputs(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand){
+        final CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity)world.getBlockEntity(pos);
+        final Optional<CauldronRecipe> match = world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, cauldron, world);
 
         if (match.isPresent()) {
             int level = state.get(LEVEL);
             ItemStack stack = player.getStackInHand(hand);
-            if (match.get().getCatalyst().test(stack)) {
+            if (match.get().getCatalyst().test(stack) && level > 0) {
                 stack.decrement(1);
                 spawnCraftingResult(world, player, match.get().getOutput());
-                ((CropWonderWorkingCauldronBlock)world.getBlockState(pos).getBlock()).setLevel(world, pos, state, level - 1);
-
-                for (final Ingredient ingredient : match.get().getIngredients()) {
-                    for (int i = 0; i <= inventory.getInvSize(); i++) {
-                        if (ingredient.test(inventory.getInvStack(i))) {
-                            inventory.removeInvStack(i);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private static void spawnCraftingResult(final World world, final PlayerEntity player, final ItemStack result) {
-        player.inventory.offerOrDrop(world, result.copy());
-    }
-
-    public static void matchRecipeInputs(BlockState state, World world, BlockPos pos, Entity entity){
-        final Inventory inventory = (SidedInventory) world.getBlockEntity(pos);
-        final CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity)world.getBlockEntity(pos);
-        final Optional<CauldronRecipe> match = world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, inventory, world);
-
-        if (match.isPresent() && entity instanceof ItemEntity) {
-            int level = state.get(LEVEL);
-            ItemEntity ientity = entity instanceof ItemEntity ? (ItemEntity) entity : null;
-            ItemStack stack = ientity.getStack();
-            if (match.get().getCatalyst().test(stack) && level>0) {
-                stack.decrement(1);
-                spawnCraftingResult(world, pos, match.get().getOutput());
+                cauldron.fluid.getInvFluid(0).split(FluidAmount.BOTTLE);
                 ((CropWonderWorkingCauldronBlock)world.getBlockState(pos).getBlock()).setLevel(world, pos, state, level - 1);
                 cauldron.saveLastRecipe();
                 lastRecipeResult=match.get().getOutput().copy();
 
                 for (final Ingredient ingredient : match.get().getIngredients()) {
-                    for (int i = 0; i <= inventory.getInvSize(); i++) {
-                        if (ingredient.test(inventory.getInvStack(i))) {
-                            inventory.removeInvStack(i);
+                    for (int i = 0; i <= cauldron.getInvSize(); i++) {
+                        if (ingredient.test(cauldron.getInvStack(i))) {
+                            cauldron.removeInvStack(i);
                             break;
                         }
                     }
@@ -141,7 +139,38 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
         }
     }
 
-    private static void spawnCraftingResult(final World world, final BlockPos pos, final ItemStack result) {
+    private void spawnCraftingResult(final World world, final PlayerEntity player, final ItemStack result) {
+        player.inventory.offerOrDrop(world, result.copy());
+    }
+
+    public void matchRecipeInputs(BlockState state, World world, BlockPos pos, ItemStack stack){
+        final CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity)world.getBlockEntity(pos);
+        final Optional<CauldronRecipe> match = world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, cauldron, world);
+
+        if (match.isPresent()) {
+            String fluidString = (cauldron.fluid.getInvFluid(0).fluidKey.toString().split(" "))[2].replace("}","");
+            int level = state.get(LEVEL);
+            if (match.get().getCatalyst().test(stack) && fluidString.equals(match.get().getFluid()) && level>0) {
+                stack.decrement(1);
+                spawnCraftingResult(world, pos, match.get().getOutput());
+                cauldron.fluid.getInvFluid(0).split(FluidAmount.BOTTLE);
+                ((CropWonderWorkingCauldronBlock)world.getBlockState(pos).getBlock()).setLevel(world, pos, state, cauldron.fluid.getInvFluid(0).getAmount_F().as1620() / 540);
+                cauldron.saveLastRecipe();
+                lastRecipeResult=match.get().getOutput().copy();
+
+                for (final Ingredient ingredient : match.get().getIngredients()) {
+                    for (int i = 0; i <= cauldron.getInvSize(); i++) {
+                        if (ingredient.test(cauldron.getInvStack(i))) {
+                            cauldron.removeInvStack(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void spawnCraftingResult(final World world, final BlockPos pos, final ItemStack result) {
         double randomOffset=(random.nextDouble()*2-1)/20;
         final ItemEntity ientity = new ItemEntity(world,
                 pos.getX()+0.5d,
@@ -151,6 +180,113 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
         ientity.addVelocity(randomOffset,0.15,randomOffset);
         ((IItemEntity)ientity).setSpawnedByCauldron(true);
         world.spawnEntity(ientity);
+    }
+
+    public void interact(CropWonderWorkingCauldronBlockEntity cauldron, PlayerEntity player, Hand hand) {
+        interactWithTank((FixedFluidInv) cauldron.fluid, player, hand);
+        ((CropWonderWorkingCauldronBlock)world.getBlockState(pos).getBlock()).setLevel(world, pos, world.getBlockState(pos), cauldron.fluid.getInvFluid(0).getAmount_F().as1620()/540);
+    }
+
+    public void handleInventory(CropWonderWorkingCauldronBlockEntity cauldron, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getStackInHand(hand);
+        int level = cauldron.getCachedState().get(LEVEL);
+        if (!stack.isEmpty()) {
+            if (stack.getItem() instanceof IBucketItem && cauldron.fluid.getInvFluid(0).getAmount_F().as1620()%((IBucketItem)player.getStackInHand(hand).getItem()).libblockattributes__getFluidVolumeAmount().as1620()==0) { cauldron.interact(cauldron, player, hand); }
+            else if (stack.getItem().equals(Items.BOWL)) {
+                if (level == 3 && !world.isClient) {
+                    if (!player.abilities.creativeMode) {
+                        stack.decrement(1);
+                        if (stack.isEmpty()) { player.setStackInHand(hand, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER)); }
+                        else player.inventory.offerOrDrop(world, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER)); }}
+                cauldron.fluid.setInvFluid(0,FluidVolumeUtil.EMPTY,Simulation.ACTION);
+                splash(world,pos);
+            } else
+                for (int i = 0; i < cauldron.getInvSize(); i++) {
+                    if (!cauldron.getInvStack(i).isEmpty()) {
+                        final Optional<CauldronRecipe> match = world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, cauldron, world);
+
+                        if (match.isPresent()) {
+                            cauldron.matchRecipeInputs(cauldron.getCachedState(), world, pos, player, hand);
+                            splash(world, pos);
+                            if (cauldron.isInvEmpty()) {
+                                break;
+                            }
+                        }
+                    } else if (cauldron.getInvStack(i).isEmpty()) {
+                        cauldron.setInvStack(i, stack.copy());
+                        stack.decrement(1);
+                        splash(world, pos);
+                        break;
+                    }
+                }
+        } else {
+            if (!player.isSneaking()) {
+                if (cauldron.isInvEmpty() && cauldron.getLastRecipeStacks() != null
+                        && cauldron.lastRecipeTimer > 0 && !cauldron.getLastRecipeStacks().isEmpty()) { cauldron.trySetLastRecipe(player); }
+            } else {
+                for (int j = cauldron.getInvSize() - 1; j >= 0; j--) {
+                    if (!cauldron.isInvEmpty() && player.isSneaking()) {
+                        if (!cauldron.getInvStack(j).isEmpty()) {
+                            player.inventory.offerOrDrop(world, cauldron.getInvStack(j));
+                            cauldron.removeInvStack(j);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void interact(CropWonderWorkingCauldronBlockEntity cauldron, ItemStack stack) {
+        IBucketItem bucket = (IBucketItem) stack.getItem();
+        if (cauldron.fluid.getInvFluid(0).isEmpty() && !bucket.libblockattributes__getFluid(stack).isEmpty()
+                ||bucket.libblockattributes__getFluid(stack)==cauldron.fluid.getInvFluid(0).fluidKey
+                && !bucket.libblockattributes__getFluid(stack).isEmpty() && cauldron.getCachedState().get(LEVEL)<3 ) {
+            cauldron.fluid.attemptInsertion(bucket.libblockattributes__getFluid(stack).withAmount(bucket.libblockattributes__getFluidVolumeAmount()), Simulation.ACTION);
+            if (bucket instanceof PotionItem) {
+                spawnCraftingResult(world, pos, new ItemStack(Items.GLASS_BOTTLE));
+            } else if (bucket instanceof FishBucketItem) {
+                ((FishBucketItem) stack.getItem()).onEmptied(world, stack, pos);
+                spawnCraftingResult(world, pos, new ItemStack(Items.BUCKET));
+            } else spawnCraftingResult(world, pos, new ItemStack(stack.getItem().getRecipeRemainder()));
+            stack.decrement(1);
+            ((CropWonderWorkingCauldronBlock) world.getBlockState(pos).getBlock()).setLevel(world, pos, world.getBlockState(pos), cauldron.fluid.getInvFluid(0).getAmount_F().as1620() / 540);
+        } else if (!cauldron.fluid.getInvFluid(0).isEmpty() && bucket.libblockattributes__getFluid(stack).isEmpty()
+                && (cauldron.fluid.getInvFluid(0).getAmount_F().as1620() % bucket.libblockattributes__getFluidVolumeAmount().as1620())==0){
+            if(bucket==Items.BUCKET && cauldron.fluid.getInvFluid(0).fluidKey instanceof PotionFluidKey) {
+                handleInventory(cauldron,stack);
+            } else
+            cauldron.fluid.attemptExtraction(cauldron.fluid.getFilterForTank(0),bucket.libblockattributes__getFluidVolumeAmount(), Simulation.ACTION);
+            spawnCraftingResult(world, pos, bucket.libblockattributes__withFluid(cauldron.fluid.getInvFluid(0).fluidKey));
+            stack.decrement(1);
+            ((CropWonderWorkingCauldronBlock) world.getBlockState(pos).getBlock()).setLevel(world, pos, world.getBlockState(pos), cauldron.fluid.getInvFluid(0).getAmount_F().as1620() / 540);
+        } else handleInventory(cauldron,stack);
+    }
+
+    public void handleInventory(CropWonderWorkingCauldronBlockEntity cauldron, ItemStack stack){
+        for (int i = 0; i < cauldron.getInvSize(); i++) {
+            if (!cauldron.getInvStack(i).isEmpty()) {
+                final Optional<CauldronRecipe> match = world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, cauldron, world);
+
+                if (match.isPresent()) {
+                    cauldron.matchRecipeInputs(cauldron.getCachedState(), world, pos, stack);
+                }
+            } else if (cauldron.getInvStack(i).isEmpty()) {
+                cauldron.setInvStack(i, stack.copy());
+                stack.decrement(1);
+                break;
+            }
+        }
+        if (!cauldron.isInvFull()) {
+            splash(world, pos);
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void splash (World world, BlockPos pos) {
+        if (world.getBlockState(pos).get(LEVEL)>0) {
+            world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_SPLASH, SoundCategory.BLOCKS, 0.1F, 10F);
+        } else world.playSound(null, pos, SoundEvents.BLOCK_STONE_HIT, SoundCategory.BLOCKS, 0.75F, 5F);
     }
 
     public void saveLastRecipe() {
@@ -211,4 +347,5 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
             }
         } else { stacks.clear(); }
     }
+
 }

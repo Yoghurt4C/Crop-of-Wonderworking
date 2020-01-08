@@ -1,15 +1,17 @@
 package mods.coww.client;
 
-import mods.coww.registry.CropWonderWorkingBlocks;
+import mods.coww.entity.CropWonderWorkingCauldronBlockEntityRenderer;
 import mods.coww.rendering.CauldronHUD;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.RenderLayer;
 import org.jetbrains.annotations.NotNull;
+
+import static mods.coww.registry.CropWonderWorkingBlocks.*;
+
 
 @SuppressWarnings("unused")
 public class CropWonderWorkingClient implements ClientModInitializer {
@@ -20,19 +22,17 @@ public class CropWonderWorkingClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         INSTANCE=this;
-        BlockRenderLayerMapImpl.INSTANCE.putBlocks(RenderLayer.getCutout(),
-                CropWonderWorkingBlocks.SWEED,
-                CropWonderWorkingBlocks.REDLON,
-                CropWonderWorkingBlocks.ATTACHED_REDLON,
-                CropWonderWorkingBlocks.LAZULLIA,
-                CropWonderWorkingBlocks.RAINBOW_CACTI,
 
-                CropWonderWorkingBlocks.COWW_CAULDRON
+        BlockRenderLayerMapImpl.INSTANCE.putBlocks(RenderLayer.getCutout(),
+                SWEED,
+                REDLON,
+                ATTACHED_REDLON,
+                LAZULLIA,
+                RAINBOW_CACTI,
+                COWW_CAULDRON
         );
 
-        ColorProviderRegistry.BLOCK.register((state, view, pos, tintIndex) -> {
-            return BiomeColors.getWaterColor(view, pos);
-        }, CropWonderWorkingBlocks.COWW_CAULDRON);
+        BlockEntityRendererRegistry.INSTANCE.register(COWW_CAULDRON_BLOCKENTITY, CropWonderWorkingCauldronBlockEntityRenderer::new);
 
         //BlockRenderLayerMapImpl.INSTANCE.putBlocks(RenderLayer.getTranslucent(), );
 
