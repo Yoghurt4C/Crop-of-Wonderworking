@@ -1,4 +1,4 @@
-package mods.coww.rendering;
+package mods.coww.client.rendering;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import com.mojang.blaze3d.systems.RenderSystem;

@@ -3,6 +3,7 @@ package mods.coww.registry;
 import mods.coww.CropWonderWorking;
 import mods.coww.blocks.*;
 import mods.coww.entity.CropWonderWorkingCauldronBlockEntity;
+import mods.coww.entity.MobJarBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,10 +20,13 @@ public class CropWonderWorkingBlocks {
     public static Block ATTACHED_REDLON = new AttachedRedlonBlock(Blocks.REDSTONE_BLOCK,Block.Settings.copy(Blocks.ATTACHED_MELON_STEM));
     public static Block LAZULLIA = new LazulliaBlock(16,Block.Settings.copy(Blocks.WHEAT));
     public static Block RAINBOW_CACTI = new RainbowCactiBlock(Block.Settings.copy(Blocks.CACTUS));
+    public static Block BRIAR = new BriarPlantBlock(4,Block.Settings.copy(Blocks.ROSE_BUSH));
 
     public static Block COWW_CAULDRON = new CropWonderWorkingCauldronBlock(Block.Settings.copy(Blocks.CAULDRON));
+    public static Block MOB_JAR = new MobJarBlock(Block.Settings.copy(Blocks.GLASS));
 
     public static final BlockEntityType<CropWonderWorkingCauldronBlockEntity> COWW_CAULDRON_BLOCKENTITY=BlockEntityType.Builder.create(CropWonderWorkingCauldronBlockEntity::new,CropWonderWorkingBlocks.COWW_CAULDRON).build(null);
+    public static final BlockEntityType<MobJarBlockEntity> MOB_JAR_BLOCK_ENTITY=BlockEntityType.Builder.create(MobJarBlockEntity::new,CropWonderWorkingBlocks.MOB_JAR).build(null);
 
     public static void init(){
         subRegister("sweed",SWEED);
@@ -30,9 +34,12 @@ public class CropWonderWorkingBlocks {
         subRegister("attached_redlon_stem",ATTACHED_REDLON);
         subRegister("lazullia",LAZULLIA);
         register("rainbow_cacti",RAINBOW_CACTI);
+        register("briar",BRIAR);
 
         register("cauldron",COWW_CAULDRON);
         beRegister("cauldron",COWW_CAULDRON_BLOCKENTITY);
+        subRegister("mob_jar",MOB_JAR);
+        beRegister("mob_jar",MOB_JAR_BLOCK_ENTITY);
     }
 
     public static BlockItem register(String name, Block block, Item.Settings settings) {

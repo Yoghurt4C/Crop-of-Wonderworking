@@ -10,7 +10,7 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.53333336,
                 "type": "minecraft:binomial"
               }

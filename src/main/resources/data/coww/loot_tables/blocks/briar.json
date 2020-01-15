@@ -1,0 +1,58 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "coww:briar",
+              "properties": {
+                "half": "lower"
+              }
+            }
+          ],
+          "name": "coww:briar"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "coww:briar",
+              "properties": {
+                "half": "upper"
+              }
+            },
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "coww:briar",
+              "properties": {
+                "age": 7
+              }
+            }
+          ],
+          "name": "coww:briar_fruit"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

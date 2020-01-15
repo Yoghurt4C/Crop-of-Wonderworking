@@ -197,7 +197,7 @@ public class CauldronRecipeSerializer implements RecipeSerializer<CauldronRecipe
         final int size = buf.readInt();
 
         final ArrayList<Ingredient> ingredients = new ArrayList<>();
-        for(int i = 0; i < size-1; i++) {
+        for(int i = 0; i < size; i++) {
             ingredients.add(Ingredient.fromPacket(buf));
         }
         final String fluid = buf.readString();

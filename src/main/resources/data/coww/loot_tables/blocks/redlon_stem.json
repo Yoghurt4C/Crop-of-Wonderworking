@@ -19,7 +19,7 @@
                 }
               ],
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.06666667,
                 "type": "minecraft:binomial"
               }
@@ -36,7 +36,7 @@
                 }
               ],
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.13333334,
                 "type": "minecraft:binomial"
               }
@@ -53,7 +53,7 @@
                 }
               ],
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.2,
                 "type": "minecraft:binomial"
               }
@@ -70,7 +70,7 @@
                 }
               ],
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.26666668,
                 "type": "minecraft:binomial"
               }
@@ -87,7 +87,7 @@
                 }
               ],
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.33333334,
                 "type": "minecraft:binomial"
               }
@@ -104,7 +104,7 @@
                 }
               ],
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.4,
                 "type": "minecraft:binomial"
               }
@@ -121,7 +121,7 @@
                 }
               ],
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.46666667,
                 "type": "minecraft:binomial"
               }
@@ -138,7 +138,7 @@
                 }
               ],
               "count": {
-                "n": 3,
+                "n": 1,
                 "p": 0.53333336,
                 "type": "minecraft:binomial"
               }

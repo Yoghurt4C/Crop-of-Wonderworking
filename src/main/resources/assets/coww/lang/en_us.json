@@ -1,17 +1,29 @@
 {
     "itemGroup.coww.core_group": "Crop of Wonderworking",
     "block.coww.rainbow_cacti": "Rainbow Cacti",
+    "block.coww.cauldron": "Wonder-Cauldron",
+    "block.coww.briar": "Briar",
 
     "item.coww.sweed_seeds": "Sweed Seeds",
     "item.coww.redlon_seeds": "Redlon Seeds",
     "item.coww.lazullia_seeds": "Lazullia Seeds",
 
+    "item.coww.briar_fruit": "Briar Fruit",
+    "item.coww.rosehip_syrup": "Rosehip Syrup",
+
     "item.coww.hoes_mad": "Hoe's Mad",
+    "item.coww.bowl_of_water": "Bowl of Water",
 
     "subtitle.coww.hoes_mad": "Hoes Mad",
 
     "cauldron.coww.fluid_mismatch": "Wrong Fluid!",
     "cauldron.coww.fluid_mismatch_ps": "Expected",
     "cauldron.coww.fill_last_recipe": "Right click with an empty hand to",
-    "cauldron.coww.fill_last_recipe_ps": "fill in the previous recipe"
+    "cauldron.coww.fill_last_recipe_ps": "fill in the previous recipe",
+    "cauldron.coww.rei_fluid_info": "Filled with:",
+    "cauldron.coww.category": "Cauldron Machinations",
+    "cauldron.coww.show_recipes": "Show All Recipes",
+
+    "cauldron.coww.info_line_1": "The Wonder-Cauldron is the main crafting mechanic in Crop of Wonderworking.",
+    "cauldron.coww.info_line_2": "For more information, please refer to the Crop of Wonderworking Encyclopedia, courtesy of Patchouli."
 }

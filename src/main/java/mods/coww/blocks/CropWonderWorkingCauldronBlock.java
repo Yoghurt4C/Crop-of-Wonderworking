@@ -20,6 +20,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -45,7 +46,7 @@ public class CropWonderWorkingCauldronBlock extends CauldronBlock implements Blo
         if (cauldron != null) {
             Fluid cauldronFluid = cauldron.fluid.getInvFluid(0).fluidKey.getRawFluid();
             if (world.isClient) {
-                return;
+               return;
             }
 
             if (cauldronFluid != Fluids.LAVA) {
@@ -61,7 +62,7 @@ public class CropWonderWorkingCauldronBlock extends CauldronBlock implements Blo
                                 cauldron.spawnCraftingResult(world, pos, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER)); }
                             cauldron.fluid.setInvFluid(0, FluidVolumeUtil.EMPTY, Simulation.ACTION);
                             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 0.1F, 10F);
-
+                            world.setBlockState(pos,cauldron.getCachedState().with(LEVEL,0));
                         } else cauldron.handleInventory(cauldron, stack);
                         cauldron.sync();
                     }
@@ -73,6 +74,14 @@ public class CropWonderWorkingCauldronBlock extends CauldronBlock implements Blo
     @Override
     public BlockEntity createBlockEntity(BlockView blockView) {
         return new CropWonderWorkingCauldronBlockEntity();
+    }
+
+    @Override
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) world.getBlockEntity(pos);
+        world.playLevelEvent(player, 2001, pos, getRawIdFromState(state));
+        if (cauldron!=null)
+        ItemScatterer.spawn(world,pos,cauldron);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package mods.coww.rendering;
+package mods.coww.client.rendering;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;

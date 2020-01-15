@@ -30,7 +30,6 @@ public abstract class CropBlockMixin extends PlantBlock {
         super(settings);
     }
 
-    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (state.get(getAgeProperty()).equals(getMaxAge())){
             world.setBlockState(pos,state.getBlock().getDefaultState());

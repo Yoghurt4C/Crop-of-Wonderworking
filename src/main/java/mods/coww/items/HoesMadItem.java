@@ -25,10 +25,10 @@ public class HoesMadItem extends HoeItem {
         World world = context.getWorld();
         BlockPos blockPos = context.getBlockPos();
         if (context.getSide() != Direction.DOWN && world.getBlockState(blockPos.up()).isAir()) {
-            BlockState blockState = (BlockState)TILLED_BLOCKS.get(world.getBlockState(blockPos).getBlock());
+            BlockState blockState = TILLED_BLOCKS.get(world.getBlockState(blockPos).getBlock());
             if (blockState != null) {
                 PlayerEntity playerEntity = context.getPlayer();
-                world.playSound(playerEntity, blockPos, CropWonderWorkingSounds.HOES_MAD, SoundCategory.BLOCKS, 0.3F, 1.0F);
+                world.playSound(playerEntity, blockPos, CropWonderWorkingSounds.HOES_MAD, SoundCategory.BLOCKS, 0.25F, 1.0F);
                 for (int i=0;i<6;i++){spawnFX(world,blockPos,3);}
                 if (!world.isClient) {
                     world.setBlockState(blockPos, blockState, 11);

@@ -1,0 +1,6 @@
+{
+    "parent": "coww:block/cross_crop",
+    "textures": {
+        "crop": "coww:block/briar/briar_stage4_top"
+    }
+}

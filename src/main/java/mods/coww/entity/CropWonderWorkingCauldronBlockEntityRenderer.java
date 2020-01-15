@@ -1,8 +1,5 @@
 package mods.coww.entity;
 
-import alexiil.mc.lib.attributes.fluid.render.DefaultFluidVolumeRenderer;
-import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
-import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -18,17 +15,11 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
 
 import static net.minecraft.block.CauldronBlock.LEVEL;
 

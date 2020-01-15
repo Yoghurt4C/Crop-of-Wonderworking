@@ -23,6 +23,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -58,12 +59,11 @@ import static alexiil.mc.lib.attributes.fluid.FluidVolumeUtil.interactWithTank;
 import static net.minecraft.block.CauldronBlock.LEVEL;
 
 public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements CropWonderWorkingCauldronInventory, BlockEntityClientSerializable, Tickable {
-    private static final int[] TOP_SLOTS = new int[]{0,1,2,3};
+    private static final int[] TOP_SLOTS = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(16, ItemStack.EMPTY);
-    //public String fluid = "empty";
     public SimpleFixedFluidInv fluid = new SimpleFixedFluidInv(1, FluidAmount.BUCKET);
     private List<ItemStack> lastRecipeStacks = null;
-    public static ItemStack lastRecipeResult = null;
+    public ItemStack lastRecipeResult = null;
     public int lastRecipeTimer = 0;
     private static Random random=new Random();
 
@@ -88,6 +88,7 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
         super.fromTag(tag);
         fluid.fromTag(tag.getCompound("Fluid"));
         this.lastRecipeTimer=tag.getInt("LastRecipeTimer");
+        if(tag.contains("LastRecipeResult")){ this.lastRecipeResult=ItemStack.fromTag(tag.getCompound("LastRecipeResult")); }
         betterFromTag(tag,items);
     }
 
@@ -96,6 +97,7 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
         super.toTag(tag);
         tag.put("Fluid",fluid.toTag());
         tag.putInt("LastRecipeTimer",this.lastRecipeTimer);
+        if(this.lastRecipeResult!=null){ tag.put("LastRecipeResult",this.lastRecipeResult.toTag(new CompoundTag())); }
         Inventories.toTag(tag,this.items);
         return tag;
     }
@@ -107,7 +109,10 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
     public CompoundTag toClientTag(CompoundTag tag){return this.toTag(tag);}
 
     public boolean canInsertInvStack(int slot, ItemStack stack, @Nullable Direction dir){
-        return this.isValidInvStack(slot, stack);
+        if (this.getInvStack(slot).isEmpty()) {
+            this.sync();
+            return this.isValidInvStack(slot, stack);
+        } else return false;
     }
 
     public boolean canExtractInvStack(int slot, ItemStack stack, Direction dir) { return false; }
@@ -191,15 +196,29 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
         ItemStack stack = player.getStackInHand(hand);
         int level = cauldron.getCachedState().get(LEVEL);
         if (!stack.isEmpty()) {
-            if (stack.getItem() instanceof IBucketItem && cauldron.fluid.getInvFluid(0).getAmount_F().as1620()%((IBucketItem)player.getStackInHand(hand).getItem()).libblockattributes__getFluidVolumeAmount().as1620()==0) { cauldron.interact(cauldron, player, hand); }
-            else if (stack.getItem().equals(Items.BOWL)) {
-                if (level == 3 && !world.isClient) {
+            if (stack.getItem().equals(Items.BOWL) && level == 3) {
+                if (!world.isClient) {
                     if (!player.abilities.creativeMode) {
                         stack.decrement(1);
-                        if (stack.isEmpty()) { player.setStackInHand(hand, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER)); }
-                        else player.inventory.offerOrDrop(world, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER)); }}
+                        if (stack.isEmpty()) {
+                            player.setStackInHand(hand, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER));
+                        } else player.inventory.offerOrDrop(world, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER)); }
+                    world.playSound(null,pos,SoundEvents.ENTITY_GENERIC_SPLASH,SoundCategory.BLOCKS,1F,1F); }
                 cauldron.fluid.setInvFluid(0,FluidVolumeUtil.EMPTY,Simulation.ACTION);
-                splash(world,pos);
+                world.setBlockState(pos,cauldron.getCachedState().with(LEVEL,0));
+            } else if (stack.getItem().equals(CropWonderWorkingItems.BOWL_OF_WATER) && level<3) {
+                cauldron.fluid.attemptInsertion(((IBucketItem)stack.getItem()).libblockattributes__getFluid(stack).withAmount(FluidAmount.BUCKET),Simulation.ACTION);
+                if (!world.isClient) {
+                    if (!player.abilities.creativeMode) {
+                        stack.decrement(1);
+                        if (stack.isEmpty()) {
+                            player.setStackInHand(hand, new ItemStack(Items.BOWL));
+                        } else player.inventory.offerOrDrop(world, new ItemStack(Items.BOWL)); }
+                    world.playSound(null,pos,SoundEvents.ENTITY_GENERIC_SPLASH,SoundCategory.BLOCKS,1F,1F); }
+                world.setBlockState(pos,cauldron.getCachedState().with(LEVEL,3));
+            } else if (stack.getItem() instanceof IBucketItem
+                    && cauldron.fluid.getInvFluid(0).getAmount_F().as1620()%((IBucketItem)player.getStackInHand(hand).getItem()).libblockattributes__getFluidVolumeAmount().as1620()==0) {
+                cauldron.interact(cauldron, player, hand);
             } else
                 for (int i = 0; i < cauldron.getInvSize(); i++) {
                     if (!cauldron.getInvStack(i).isEmpty()) {
@@ -207,7 +226,7 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
 
                         if (match.isPresent()) {
                             cauldron.matchRecipeInputs(cauldron.getCachedState(), world, pos, player, hand);
-                            splash(world, pos);
+                            if(!world.isClient){splash(world, pos);}
                             if (cauldron.isInvEmpty()) {
                                 break;
                             }
@@ -215,7 +234,7 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
                     } else if (cauldron.getInvStack(i).isEmpty()) {
                         cauldron.setInvStack(i, stack.copy());
                         stack.decrement(1);
-                        splash(world, pos);
+                        if(!world.isClient){splash(world, pos);}
                         break;
                     }
                 }
@@ -248,18 +267,19 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
             } else if (bucket instanceof FishBucketItem) {
                 ((FishBucketItem) stack.getItem()).onEmptied(world, stack, pos);
                 spawnCraftingResult(world, pos, new ItemStack(Items.BUCKET));
-            } else spawnCraftingResult(world, pos, new ItemStack(stack.getItem().getRecipeRemainder()));
+            } else {spawnCraftingResult(world, pos, new ItemStack(stack.getItem().getRecipeRemainder()));}
             stack.decrement(1);
             ((CropWonderWorkingCauldronBlock) world.getBlockState(pos).getBlock()).setLevel(world, pos, world.getBlockState(pos), cauldron.fluid.getInvFluid(0).getAmount_F().as1620() / 540);
         } else if (!cauldron.fluid.getInvFluid(0).isEmpty() && bucket.libblockattributes__getFluid(stack).isEmpty()
-                && (cauldron.fluid.getInvFluid(0).getAmount_F().as1620() % bucket.libblockattributes__getFluidVolumeAmount().as1620())==0){
-            if(bucket==Items.BUCKET && cauldron.fluid.getInvFluid(0).fluidKey instanceof PotionFluidKey) {
-                handleInventory(cauldron,stack);
-            } else
-            cauldron.fluid.attemptExtraction(cauldron.fluid.getFilterForTank(0),bucket.libblockattributes__getFluidVolumeAmount(), Simulation.ACTION);
-            spawnCraftingResult(world, pos, bucket.libblockattributes__withFluid(cauldron.fluid.getInvFluid(0).fluidKey));
-            stack.decrement(1);
-            ((CropWonderWorkingCauldronBlock) world.getBlockState(pos).getBlock()).setLevel(world, pos, world.getBlockState(pos), cauldron.fluid.getInvFluid(0).getAmount_F().as1620() / 540);
+                && (cauldron.fluid.getInvFluid(0).getAmount_F().as1620() % bucket.libblockattributes__getFluidVolumeAmount().as1620())==0) {
+            if (bucket == Items.BUCKET && cauldron.fluid.getInvFluid(0).fluidKey instanceof PotionFluidKey) {
+                handleInventory(cauldron, stack);
+            } else {
+                cauldron.fluid.attemptExtraction(cauldron.fluid.getFilterForTank(0), bucket.libblockattributes__getFluidVolumeAmount(), Simulation.ACTION);
+                spawnCraftingResult(world, pos, bucket.libblockattributes__withFluid(cauldron.fluid.getInvFluid(0).fluidKey));
+                stack.decrement(1);
+                ((CropWonderWorkingCauldronBlock) world.getBlockState(pos).getBlock()).setLevel(world, pos, world.getBlockState(pos), cauldron.fluid.getInvFluid(0).getAmount_F().as1620() / 540);
+            }
         } else handleInventory(cauldron,stack);
     }
 
@@ -278,12 +298,11 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
             }
         }
         if (!cauldron.isInvFull()) {
-            splash(world, pos);
+            if(!world.isClient){splash(world, pos);}
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public static void splash (World world, BlockPos pos) {
+    public void splash (World world, BlockPos pos) {
         if (world.getBlockState(pos).get(LEVEL)>0) {
             world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_SPLASH, SoundCategory.BLOCKS, 0.1F, 10F);
         } else world.playSound(null, pos, SoundEvents.BLOCK_STONE_HIT, SoundCategory.BLOCKS, 0.75F, 5F);

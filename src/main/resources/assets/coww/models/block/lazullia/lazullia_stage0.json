@@ -1,6 +1,6 @@
 {
-    "parent": "block/cross",
+    "parent": "coww:block/cross_crop",
     "textures": {
-        "cross": "coww:block/lazullia/lazullia_0"
+        "crop": "coww:block/lazullia/lazullia_0"
     }
 }

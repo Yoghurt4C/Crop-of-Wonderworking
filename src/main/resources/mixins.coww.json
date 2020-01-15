@@ -8,6 +8,9 @@
     "ItemEntityMixin",
     "MinecraftClientMixin"
   ],
+  "client": [
+    "MobJarBlockItemRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

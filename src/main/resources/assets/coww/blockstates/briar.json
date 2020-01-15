@@ -1,0 +1,21 @@
+{
+    "variants": {
+        "age=0,half=upper": { "model": "coww:block/briar/briar_stage0_top" },
+        "age=1,half=upper": { "model": "coww:block/briar/briar_stage1_top" },
+        "age=2,half=upper": { "model": "coww:block/briar/briar_stage2_top" },
+        "age=3,half=upper": { "model": "coww:block/briar/briar_stage3_top" },
+        "age=4,half=upper": { "model": "coww:block/briar/briar_stage4_top" },
+        "age=5,half=upper": { "model": "coww:block/briar/briar_stage5_top" },
+        "age=6,half=upper": { "model": "coww:block/briar/briar_stage6_top" },
+        "age=7,half=upper": { "model": "coww:block/briar/briar_stage7_top" },
+
+        "age=0,half=lower": { "model": "coww:block/briar/briar_stage0_bot" },
+        "age=1,half=lower": { "model": "coww:block/briar/briar_stage1_bot" },
+        "age=2,half=lower": { "model": "coww:block/briar/briar_stage2_bot" },
+        "age=3,half=lower": { "model": "coww:block/briar/briar_stage3_bot" },
+        "age=4,half=lower": { "model": "coww:block/briar/briar_stage4_bot" },
+        "age=5,half=lower": { "model": "coww:block/briar/briar_stage5_bot" },
+        "age=6,half=lower": { "model": "coww:block/briar/briar_stage6_bot" },
+        "age=7,half=lower": { "model": "coww:block/briar/briar_stage7_bot" }
+    }
+}

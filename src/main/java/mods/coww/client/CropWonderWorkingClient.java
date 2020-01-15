@@ -1,7 +1,8 @@
 package mods.coww.client;
 
 import mods.coww.entity.CropWonderWorkingCauldronBlockEntityRenderer;
-import mods.coww.rendering.CauldronHUD;
+import mods.coww.client.rendering.CauldronHUD;
+import mods.coww.entity.MobJarBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
@@ -29,12 +30,14 @@ public class CropWonderWorkingClient implements ClientModInitializer {
                 ATTACHED_REDLON,
                 LAZULLIA,
                 RAINBOW_CACTI,
+                BRIAR,
                 COWW_CAULDRON
         );
 
         BlockEntityRendererRegistry.INSTANCE.register(COWW_CAULDRON_BLOCKENTITY, CropWonderWorkingCauldronBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(MOB_JAR_BLOCK_ENTITY, MobJarBlockEntityRenderer::new);
 
-        //BlockRenderLayerMapImpl.INSTANCE.putBlocks(RenderLayer.getTranslucent(), );
+        BlockRenderLayerMapImpl.INSTANCE.putBlocks(RenderLayer.getTranslucent(), MOB_JAR);
 
         HudRenderCallback.EVENT.register(delta -> this.cauldronHUD.renderHUD());
     }
