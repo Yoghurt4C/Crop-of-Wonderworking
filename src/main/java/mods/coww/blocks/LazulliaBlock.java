@@ -1,6 +1,5 @@
 package mods.coww.blocks;
 
-import mods.coww.entity.CropWonderWorkingCauldronBlockEntity;
 import mods.coww.registry.CropWonderWorkingItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

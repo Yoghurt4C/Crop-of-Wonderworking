@@ -1,6 +1,5 @@
 package mods.coww.libcd;
 
-import io.github.cottonmc.libcd.api.tweaker.TweakerManager;
 import io.github.cottonmc.libcd.api.tweaker.recipe.RecipeParser;
 import io.github.cottonmc.libcd.api.tweaker.recipe.RecipeTweaker;
 import mods.coww.recipes.CauldronRecipe;

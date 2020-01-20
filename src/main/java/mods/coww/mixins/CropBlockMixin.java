@@ -1,6 +1,8 @@
 package mods.coww.mixins;
 
-import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.CropBlock;
+import net.minecraft.block.PlantBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;

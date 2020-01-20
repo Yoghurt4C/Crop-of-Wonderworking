@@ -1,12 +1,12 @@
 package mods.coww.client;
 
-import mods.coww.entity.CropWonderWorkingCauldronBlockEntityRenderer;
 import mods.coww.client.rendering.CauldronHUD;
+import mods.coww.entity.CropWonderWorkingCauldronBlockEntityRenderer;
 import mods.coww.entity.MobJarBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import org.jetbrains.annotations.NotNull;

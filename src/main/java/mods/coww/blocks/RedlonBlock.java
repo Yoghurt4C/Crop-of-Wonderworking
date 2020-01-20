@@ -21,7 +21,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-
 import java.util.Random;
 
 public class RedlonBlock extends PlantBlock implements Fertilizable {

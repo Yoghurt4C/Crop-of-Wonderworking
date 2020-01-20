@@ -4,7 +4,8 @@ import mods.coww.blocks.AttachableRedstoneBlock;
 import mods.coww.blocks.AttachedRedlonBlock;
 import mods.coww.blocks.RedlonBlock;
 import mods.coww.registry.CropWonderWorkingBlocks;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.RedstoneBlock;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(RedstoneBlock.class)

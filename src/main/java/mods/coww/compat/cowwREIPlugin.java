@@ -11,11 +11,8 @@ import mods.coww.recipes.CauldronRecipe;
 import mods.coww.registry.CropWonderWorkingBlocks;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.util.version.VersionParsingException;
-import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class cowwREIPlugin implements REIPluginV0 {

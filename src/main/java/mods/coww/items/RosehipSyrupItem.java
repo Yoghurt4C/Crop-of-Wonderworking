@@ -1,6 +1,5 @@
 package mods.coww.items;
 
-import mods.coww.registry.CropWonderWorkingItems;
 import net.minecraft.advancement.criterion.Criterions;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
