@@ -22,9 +22,6 @@ public class CropWonderWorking implements ModInitializer {
 		CropWonderWorkingSounds.init();
 		CropWonderWorkingRecipes.init();
 		CropWonderWorkingEvents.init();
-		if (FabricLoader.getInstance().isModLoaded("libcd")){
-			CauldronRecipeTweaker.init();
-		}
 	}
 
 	public static Identifier getId(String name) {

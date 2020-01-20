@@ -10,14 +10,13 @@ import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 
 public class CauldronRecipeTweaker {
-    public void addCauldronRecipe(Object[] inputs, String fluid, String catalyst, String output){
+    public void addCauldronRecipe(Object[] inputs, String fluid, Object catalyst, Object output){
         try {
             ItemStack outputItemStack = RecipeParser.processItemStack(output);
             Identifier recipeId = RecipeTweaker.INSTANCE.getRecipeId(outputItemStack);
             DefaultedList<Ingredient> ingredients = DefaultedList.of();
-            for (int i = 0; i < Math.min(inputs.length, 9); i++) {
+            for (int i = 0; i < Math.min(inputs.length, 16); i++) {
                 Object id = inputs[i];
-                if (id.equals("")) continue;
                 ingredients.add(i, RecipeParser.processIngredient(id));
             }
             Ingredient catalystIngredient = RecipeParser.processIngredient(catalyst);
@@ -25,9 +24,5 @@ public class CauldronRecipeTweaker {
         } catch (Exception e) {
             System.out.println("Error parsing cauldron recipe - " + e.getMessage());
         }
-    }
-
-    public static void init(){
-        TweakerManager.INSTANCE.addAssistant("mods.coww.libcd.CauldronRecipeTweaker", new CauldronRecipeTweaker());
     }
 }
