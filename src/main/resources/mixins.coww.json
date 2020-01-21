@@ -3,8 +3,9 @@
   "package": "mods.coww.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "RedstoneBlockMixin",
-    "ItemEntityMixin"
+    "ItemEntityMixin",
+    "MinecraftClientMixin",
+    "RedstoneBlockMixin"
   ],
   "client": [
     "MinecraftClientMixin"

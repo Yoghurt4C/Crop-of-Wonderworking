@@ -1,7 +1,8 @@
 package mods.coww.registry;
 
 import mods.coww.CropWonderWorking;
-import mods.coww.recipes.*;
+import mods.coww.recipes.CauldronRecipe;
+import mods.coww.recipes.CauldronRecipeSerializer;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;

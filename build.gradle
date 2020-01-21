@@ -32,11 +32,16 @@ minecraft {
 
 repositories {
 	maven { url = "https://maven.fabricmc.net/" }
+	maven {
+		name = "CottonMC"
+		url  = "http://server.bbkr.space:8081/artifactory/libs-release"
+	}
 	maven { url = "https://jitpack.io" }
 	maven {
 	        name = "BuildCraft"
 	        url = "https://mod-buildcraft.com/maven"
 	    }
+
 	flatDir {
 	  dirs "libs"
 	}
@@ -51,10 +56,12 @@ dependencies {
 	modCompile "io.github.prospector:modmenu:${project.mod_menu_version}"
 	modCompile ("me.shedaniel:RoughlyEnoughItems:${project.rei_version}") { exclude(module: "ModMenu") }
 	modCompile "alexiil.mc.lib:libblockattributes-all:0.6.3"
+	modCompile "io.github.cottonmc:LibCD:${project.libcd_version}"
 
 	implementation 'org.jetbrains:annotations:15.0'
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-	modCompile "vazkii.patchouli:Patchouli:1.1.25"
+	modCompile files("libs/patchouli-1.1.25.jar")
+	// modCompile "vazkii.patchouli:Patchouli:1.1.25"
 	modCompile "ninjaphenix.ninjatips:NinjaTips:1.0.31.15"
 	modCompile "java.io.github.giantnuker.fabric.tooltipwrap:tooltipwrap:1.0.2"
 }

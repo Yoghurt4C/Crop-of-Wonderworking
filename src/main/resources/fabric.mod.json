@@ -27,6 +27,9 @@
     ],
     "rei_plugins_v0": [
       "mods.coww.compat.cowwREIPlugin"
+    ],
+    "libcd": [
+      "mods.coww.libcd.ModLibCDInitializer"
     ]
   },
   "mixins": [

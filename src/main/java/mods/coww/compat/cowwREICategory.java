@@ -14,7 +14,6 @@ import mods.coww.recipes.CauldronRecipe;
 import mods.coww.registry.CropWonderWorkingBlocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;

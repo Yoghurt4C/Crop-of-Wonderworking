@@ -20,7 +20,6 @@ public class CropWonderWorking implements ModInitializer {
 		CropWonderWorkingSounds.init();
 		CropWonderWorkingRecipes.init();
 		CropWonderWorkingEvents.init();
-
 	}
 
 	public static final String modid="coww";

@@ -39,7 +39,7 @@ public class CauldronRecipe implements Recipe<Inventory> {
         this.recipeId = recipeId;
     }
 
-    CauldronRecipe(List<Ingredient> ingredients,  String fluid, Ingredient catalyst, ItemStack result, Identifier recipeId) {
+    public CauldronRecipe(List<Ingredient> ingredients,  String fluid, Ingredient catalyst, ItemStack result, Identifier recipeId) {
         this.ingredients = ingredients;
         this.fluid = fluid;
         this.catalyst = catalyst;
