@@ -12,9 +12,9 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class RedstoneBlockMixin extends Block implements AttachableRedstoneBlock {
     protected RedstoneBlockMixin(Settings settings) { super(settings); }
 
-    public RedlonBlock getStem() {
+    public RedlonBlock coww_getStem() {
         return (RedlonBlock)CropWonderWorkingBlocks.REDLON;
     }
 
-    public AttachedRedlonBlock getAttachedStem() { return (AttachedRedlonBlock) CropWonderWorkingBlocks.ATTACHED_REDLON; }
+    public AttachedRedlonBlock coww_getAttachedStem() { return (AttachedRedlonBlock) CropWonderWorkingBlocks.ATTACHED_REDLON; }
 }

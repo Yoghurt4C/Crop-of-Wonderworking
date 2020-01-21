@@ -169,7 +169,7 @@ public class CropWonderWorkingCauldronBlockEntity extends BlockEntity implements
                 pos.getZ()+0.5d,
                 result.copy());
         ientity.addVelocity(randomOffset,0.15,randomOffset);
-        ((IItemEntity)ientity).setSpawnedByCauldron(true);
+        ((IItemEntity)ientity).coww_setSpawnedByCauldron(true);
         world.spawnEntity(ientity);
     }
 

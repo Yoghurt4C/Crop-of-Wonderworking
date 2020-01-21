@@ -1,6 +1,6 @@
 package mods.coww.entity;
 
 public interface IItemEntity {
-    boolean getSpawnedByCauldron();
-    void setSpawnedByCauldron(boolean bool);
+    boolean coww_getSpawnedByCauldron();
+    void coww_setSpawnedByCauldron(boolean bool);
 }

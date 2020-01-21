@@ -3,6 +3,8 @@ package mods.coww.blocks;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.mixin.api.IBucketItem;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import mods.coww.entity.CropWonderWorkingCauldronBlockEntity;
 import mods.coww.entity.IItemEntity;
 import mods.coww.registry.CropWonderWorkingItems;
@@ -15,8 +17,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundCategory;
@@ -47,17 +47,19 @@ public class CropWonderWorkingCauldronBlock extends CauldronBlock implements Blo
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         final CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) world.getBlockEntity(pos);
         if (cauldron != null) {
-            Fluid cauldronFluid = cauldron.fluid.getInvFluid(0).fluidKey.getRawFluid();
+            FluidKey cauldronFluid = cauldron.fluid.getInvFluid(0).fluidKey;
             if (world.isClient) {
                return;
             }
 
-            if (cauldronFluid != Fluids.LAVA) {
+            if (cauldronFluid.equals(FluidKeys.LAVA) && !cauldron.fluid.getInvFluid(0).isEmpty()) {
+                entity.setOnFireFor(4);
+            } else {
                 if (entity instanceof ItemEntity) {
                     ItemEntity ientity = (ItemEntity) entity;
                     ItemStack stack = ientity.getStack();
                     int level = state.get(LEVEL);
-                    if (!((IItemEntity) ientity).getSpawnedByCauldron()) {
+                    if (!((IItemEntity) ientity).coww_getSpawnedByCauldron()) {
                         if (stack.getItem() instanceof IBucketItem) { cauldron.interact(cauldron, stack); }
                         else if (stack.getItem().equals(Items.BOWL)) {
                             if (level == 3) {
@@ -70,7 +72,7 @@ public class CropWonderWorkingCauldronBlock extends CauldronBlock implements Blo
                         cauldron.sync();
                     }
                 }
-            } else { entity.setOnFireFor(4); }
+            }
         }
     }
 

@@ -3,13 +3,12 @@
   "package": "mods.coww.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CropBlockMixin",
     "ItemEntityMixin",
     "MinecraftClientMixin",
     "RedstoneBlockMixin"
   ],
   "client": [
-    "MobJarBlockItemRendererMixin"
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

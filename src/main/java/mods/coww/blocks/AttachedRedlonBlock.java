@@ -52,7 +52,7 @@ public class AttachedRedlonBlock extends PlantBlock {
     }
 
     public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, IWorld world, BlockPos pos, BlockPos neighborPos) {
-        return neighborState.getBlock() != this.growableBlock && facing == state.get(FACING) ? ((AttachableRedstoneBlock)this.growableBlock).getStem().getDefaultState().with(StemBlock.AGE, 7) : super.getStateForNeighborUpdate(state, facing, neighborState, world, pos, neighborPos);
+        return neighborState.getBlock() != this.growableBlock && facing == state.get(FACING) ? ((AttachableRedstoneBlock)this.growableBlock).coww_getStem().getDefaultState().with(StemBlock.AGE, 7) : super.getStateForNeighborUpdate(state, facing, neighborState, world, pos, neighborPos);
     }
 
     protected boolean canPlantOnTop(BlockState floor, BlockView view, BlockPos pos) {

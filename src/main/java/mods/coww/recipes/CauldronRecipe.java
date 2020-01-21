@@ -75,8 +75,8 @@ public class CauldronRecipe implements Recipe<Inventory> {
             int stackIndex = -1;
 
             for(int j = 0; j < ingredientsMissing.size(); j++) {
-                Ingredient ingr = ingredientsMissing.get(j);
-                if(ingr.test(input)) {
+                Ingredient ingredient = ingredientsMissing.get(j);
+                if(ingredient.test(input)) {
                     stackIndex = j;
                     break;
                 }
@@ -147,7 +147,7 @@ public class CauldronRecipe implements Recipe<Inventory> {
 
     public static class Type implements RecipeType<CauldronRecipe> {
         public static final Type INSTANCE = new Type();
-        public static final Identifier ID = CropWonderWorking.getId("cauldron");
+        public static final Identifier ID = CropWonderWorking.cowwIdentifier("cauldron");
 
         private Type() {
             // NO-OP

@@ -19,11 +19,11 @@ public class CropWonderWorkingRecipes {
     }
 
     public static <T extends RecipeSerializer<?>> T registerRecipeSerializer(String name, T serializer) {
-        return Registry.register(Registry.RECIPE_SERIALIZER, CropWonderWorking.getId(name), serializer);
+        return Registry.register(Registry.RECIPE_SERIALIZER, CropWonderWorking.cowwIdentifier(name), serializer);
     }
 
     public static <T extends Recipe<?>> RecipeType<T> registerRecipeType(String name) {
-        return Registry.register(Registry.RECIPE_TYPE, CropWonderWorking.getId(name), new RecipeType<T>() {
+        return Registry.register(Registry.RECIPE_TYPE, CropWonderWorking.cowwIdentifier(name), new RecipeType<T>() {
             @Override
             public String toString() {
                 return name;

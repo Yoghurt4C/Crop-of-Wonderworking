@@ -22,9 +22,9 @@ public abstract class ItemEntityMixin extends Entity implements IItemEntity {
         super(entityType,world);
     }
 
-    public boolean getSpawnedByCauldron() {return this.ITEM_CAULDRON_SPAWNED;}
+    public boolean coww_getSpawnedByCauldron() {return this.ITEM_CAULDRON_SPAWNED;}
 
-    public void setSpawnedByCauldron(boolean bool) {
+    public void coww_setSpawnedByCauldron(boolean bool) {
         this.ITEM_CAULDRON_SPAWNED=bool;
     }
 

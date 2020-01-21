@@ -17,8 +17,8 @@ import net.minecraft.util.Identifier;
 
 public class cowwREIPlugin implements REIPluginV0 {
 
-    public static final Identifier PLUGIN = CropWonderWorking.getId("coww_rei_plugin");
-    public static final Identifier CAULDRON = CropWonderWorking.getId("cauldron");
+    public static final Identifier PLUGIN = CropWonderWorking.cowwIdentifier("coww_rei_plugin");
+    public static final Identifier CAULDRON = CropWonderWorking.cowwIdentifier("cauldron");
 
     @Override
     public Identifier getPluginIdentifier() {

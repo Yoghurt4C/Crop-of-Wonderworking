@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MinecraftClientMixin {
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(CallbackInfo ci) {
+    private void cowwInit(CallbackInfo ctx) {
         CropWonderWorkingClient.get().onInit((MinecraftClient) (Object) this);
     }
 }

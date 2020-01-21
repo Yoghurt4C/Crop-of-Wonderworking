@@ -62,6 +62,8 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 	modCompile files("libs/patchouli-1.1.25.jar")
 	// modCompile "vazkii.patchouli:Patchouli:1.1.25"
+	modCompile "ninjaphenix.ninjatips:NinjaTips:1.0.31.15"
+	modCompile "java.io.github.giantnuker.fabric.tooltipwrap:tooltipwrap:1.0.2"
 }
 
 idea {

@@ -12,6 +12,6 @@ public class CropWonderWorkingSounds {
     }
 
     public static SoundEvent register(String name){
-        return Registry.register(Registry.SOUND_EVENT, CropWonderWorking.getId(name), new SoundEvent(CropWonderWorking.getId(name)));
+        return Registry.register(Registry.SOUND_EVENT, CropWonderWorking.cowwIdentifier(name), new SoundEvent(CropWonderWorking.cowwIdentifier(name)));
     }
 }

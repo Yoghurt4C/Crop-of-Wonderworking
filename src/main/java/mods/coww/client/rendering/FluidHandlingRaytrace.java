@@ -7,7 +7,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RayTraceContext;
 import net.minecraft.world.World;
 
-public class ItemRaytraceUtil {
+public class FluidHandlingRaytrace {
     public static BlockHitResult raytraceFromPlayer(World world, PlayerEntity player, RayTraceContext.FluidHandling fluidHandling, double range) {
         float f = player.pitch;
         float f1 = player.yaw;

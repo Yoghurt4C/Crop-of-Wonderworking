@@ -52,7 +52,6 @@ public class CauldronHUD extends DrawableHelper {
                 if (pos.getType() == HitResult.Type.BLOCK) {
                     BlockPos bpos = pos.getType() == HitResult.Type.BLOCK ? ((BlockHitResult) pos).getBlockPos() : null;
                     BlockState state = bpos != null ? client.world.getBlockState(bpos) : null;
-                    Block block = state == null ? null : state.getBlock();
                     BlockEntity blockEntity = bpos != null ? client.world.getBlockEntity(bpos) : null;
                     if (blockEntity instanceof CropWonderWorkingCauldronBlockEntity) {
                         CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) blockEntity;
@@ -75,17 +74,17 @@ public class CauldronHUD extends DrawableHelper {
 
                         float angle = -90;
                         int radius = 24;
-                        int items = 0;
+                        int stackCount = 0;
                         if (cauldron != null) {
                             for (int i = 0; i < cauldron.getInvSize(); i++) {
                                 if (cauldron.getInvStack(i).isEmpty()) {
                                     break;
                                 }
-                                items++;
+                                stackCount++;
                             }
 
-                            if (items > 0) {
-                                float anglePer = 360F / items;
+                            if (stackCount > 0) {
+                                float anglePerStack = 360F / stackCount;
                                 final Optional<CauldronRecipe> match = client.world.getRecipeManager().getFirstMatch(CauldronRecipe.Type.INSTANCE, cauldron, client.world);
                                 if (match.isPresent()) {
                                     RenderSystem.enableAlphaTest();
@@ -117,13 +116,13 @@ public class CauldronHUD extends DrawableHelper {
                                     RenderSystem.popMatrix();
                                 }
 
-                                for (int i = 0; i < items; i++) {
+                                for (int i = 0; i < stackCount; i++) {
                                     double xPos = xc + Math.cos(angle * Math.PI / 180D) * radius - 8;
                                     double yPos = yc + Math.sin(angle * Math.PI / 180D) * radius - 8;
                                     RenderSystem.translated(xPos, yPos, 0);
                                     client.getItemRenderer().renderGuiItemIcon(cauldron.getInvStack(i), 0, 0);
                                     RenderSystem.translated(-xPos, -yPos, 0);
-                                    angle += anglePer;
+                                    angle += anglePerStack;
                                 }
                             } else if (state.get(LEVEL) > 0 && cauldron.lastRecipeTimer>0 && cauldron.getLastRecipeResult()!=null) {
                                 String s = I18n.translate("cauldron.coww.fill_last_recipe");
