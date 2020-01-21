@@ -42,8 +42,7 @@ public class cowwREICategory<R extends CauldronRecipe> implements RecipeCategory
     @Override
     public List<Widget> setupDisplay(Supplier<cowwREIDisplay<R>> recipeDisplaySupplier, Rectangle bounds) {
         MinecraftClient client = MinecraftClient.getInstance();
-        int xc = client.getWindow().getScaledWidth() / 2;
-        int yc = client.getWindow().getScaledHeight() / 2;
+        Point point = new Point(bounds.getCenterX()-10,bounds.getCenterY()-42), center = new Point(bounds.getCenterX()-10, bounds.getCenterY()-10);
         List<List<EntryStack>> input = recipeDisplaySupplier.get().getInputEntries();
         String fluidString = recipeDisplaySupplier.get().getFluid().split(":")[1];
         List<Widget> widgets = Lists.newLinkedList(Collections.singletonList(new RecipeBaseWidget(bounds) {
@@ -53,18 +52,17 @@ public class cowwREICategory<R extends CauldronRecipe> implements RecipeCategory
                 RenderSystem.enableAlphaTest();
                 RenderSystem.enableBlend();
                 client.getTextureManager().bindTexture(new Identifier("coww:textures/gui/cauldron_recipe.png"));
-                blit(xc-33, yc-35, 0, 0, 101,78, 128, 128);
+                blit(center.getX()-23, center.getY()-39, 0, 0, 101,78, 128, 128);
                 RenderSystem.disableBlend();
                 RenderSystem.disableAlphaTest();
                 RenderSystem.translated(0,0,250);
-                client.textRenderer.drawWithShadow("+",xc + 23, yc - 24, 0xFFFFFF);
+                client.textRenderer.drawWithShadow("+",center.getX() + 33, center.getY() - 29, 0xFFFFFF);
                 RenderSystem.translated(0,0,-250);
                 RenderSystem.popMatrix();
             }
         }));
 
         double angleBetweenEach = 360.0 / input.size();
-        Point point = new Point(bounds.getCenterX()-10,bounds.getCenterY()-42), center = new Point(bounds.getCenterX()-10, bounds.getCenterY()-10);
         String fluidInfo = I18n.translate("cauldron.coww.rei_fluid_info")+" "+toTitleCase(fluidString);
 
         for (List<EntryStack> entryStacks : input) {

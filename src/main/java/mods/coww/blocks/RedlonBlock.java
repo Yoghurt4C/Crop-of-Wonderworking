@@ -62,7 +62,7 @@ public class RedlonBlock extends PlantBlock implements Fertilizable {
                     BlockPos blockPos = pos.offset(direction);
                     if (world.getBlockState(blockPos).isAir()) {
                         world.setBlockState(blockPos, this.growableBlock.getDefaultState());
-                        world.setBlockState(pos, ((AttachableRedstoneBlock)Blocks.REDSTONE_BLOCK).getAttachedStem().getDefaultState().with(HorizontalFacingBlock.FACING, direction));
+                        world.setBlockState(pos, ((AttachableRedstoneBlock)Blocks.REDSTONE_BLOCK).coww_getAttachedStem().getDefaultState().with(HorizontalFacingBlock.FACING, direction));
                     }
                 }
             }

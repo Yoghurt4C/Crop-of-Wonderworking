@@ -45,25 +45,25 @@ public class CropWonderWorkingCauldronBlockEntityRenderer extends BlockEntityRen
         float v2 = 1F / 4F;
         float w = -v * 2.5F;
         if (!cauldron.isInvEmpty()) {
-            int petals = 0;
+            int stackCount = 0;
             for (int i = 0; i < cauldron.getInvSize(); i++)
                 if (!cauldron.getInvStack(i).isEmpty())
-                    petals++;
+                    stackCount++;
                 else break;
 
-            if (petals > 0) {
+            if (stackCount > 0) {
                 final float modifier = 6F;
                 final float rotationModifier = 0.25F;
                 final float radiusBase = 0.9F;
                 final float radiusMod = 0.1F;
                 float ticks = (cauldron.getWorld().getTime() + tickDelta) * 0.5F;
-                float offsetPerPetal = 360 / petals;
+                float offsetPerStack = 360f / stackCount;
 
                 matrices.push();
                 matrices.translate(0.5, (0.375F + (cauldron.getCachedState().get(LEVEL) * 0.1875F))-0.025 + (bobOffset / 16.0), 0.5);
                 matrices.scale(v2, v2, v2);
-                for (int i = 0; i < petals; i++) {
-                    float offset = offsetPerPetal * i;
+                for (int i = 0; i < stackCount; i++) {
+                    float offset = offsetPerStack * i;
                     float deg = (int) (ticks / rotationModifier % 360F + offset);
                     float rad = deg * (float) Math.PI / 180F;
                     float radiusX = (float) (radiusBase + radiusMod * Math.sin(ticks / modifier));

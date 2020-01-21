@@ -3,7 +3,6 @@ package mods.coww.registry;
 import mods.coww.CropWonderWorking;
 import mods.coww.blocks.*;
 import mods.coww.entity.CropWonderWorkingCauldronBlockEntity;
-import mods.coww.entity.MobJarBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -23,11 +22,8 @@ public class CropWonderWorkingBlocks {
     public static Block BRIAR = new BriarPlantBlock(4,Block.Settings.copy(Blocks.ROSE_BUSH));
 
     public static Block COWW_CAULDRON = new CropWonderWorkingCauldronBlock(Block.Settings.copy(Blocks.CAULDRON));
-    public static Block MOB_JAR = new MobJarBlock(Block.Settings.copy(Blocks.GLASS));
 
     public static final BlockEntityType<CropWonderWorkingCauldronBlockEntity> COWW_CAULDRON_BLOCKENTITY=BlockEntityType.Builder.create(CropWonderWorkingCauldronBlockEntity::new,CropWonderWorkingBlocks.COWW_CAULDRON).build(null);
-    public static final BlockEntityType<MobJarBlockEntity> MOB_JAR_BLOCK_ENTITY=BlockEntityType.Builder.create(MobJarBlockEntity::new,CropWonderWorkingBlocks.MOB_JAR).build(null);
-
     public static void init(){
         subRegister("sweed",SWEED);
         subRegister("redlon_stem",REDLON);
@@ -38,12 +34,10 @@ public class CropWonderWorkingBlocks {
 
         register("cauldron",COWW_CAULDRON);
         beRegister("cauldron",COWW_CAULDRON_BLOCKENTITY);
-        subRegister("mob_jar",MOB_JAR);
-        beRegister("mob_jar",MOB_JAR_BLOCK_ENTITY);
     }
 
     public static BlockItem register(String name, Block block, Item.Settings settings) {
-        Identifier id = CropWonderWorking.getId(name);
+        Identifier id = CropWonderWorking.cowwIdentifier(name);
         Registry.register(Registry.BLOCK, id, block);
         BlockItem item = new BlockItem(block, settings);
         item.appendBlocks(Item.BLOCK_ITEMS, item);
@@ -56,12 +50,12 @@ public class CropWonderWorkingBlocks {
     }
 
     public static Block subRegister(String name, Block block){
-        Identifier id = CropWonderWorking.getId(name);
+        Identifier id = CropWonderWorking.cowwIdentifier(name);
         Registry.register(Registry.BLOCK, id, block);
         return block;
     }
 
     private static <T extends BlockEntity> BlockEntityType<T> beRegister(String name, BlockEntityType<T> build) {
-        return Registry.register(Registry.BLOCK_ENTITY, CropWonderWorking.getId(name), build);
+        return Registry.register(Registry.BLOCK_ENTITY, CropWonderWorking.cowwIdentifier(name), build);
     }
 }

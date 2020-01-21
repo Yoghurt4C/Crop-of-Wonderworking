@@ -2,7 +2,6 @@ package mods.coww.registry;
 
 import mods.coww.CropWonderWorking;
 import mods.coww.items.HoesMadItem;
-import mods.coww.items.MobJarBlockItem;
 import mods.coww.items.RosehipSyrupItem;
 import mods.coww.items.WaterBowlItem;
 import net.minecraft.fluid.Fluids;
@@ -21,7 +20,6 @@ public class CropWonderWorkingItems {
 
     public static Item HOES_MAD = new HoesMadItem(ToolMaterials.IRON,-2F, new Item.Settings().group(CropWonderWorking.CropWonderWorkingCoreGroup));
     public static Item BOWL_OF_WATER = new WaterBowlItem(Fluids.WATER, new Item.Settings().maxCount(1).recipeRemainder(Items.BOWL).group(CropWonderWorking.CropWonderWorkingCoreGroup));
-    public static BlockItem MOB_JAR = new MobJarBlockItem(CropWonderWorkingBlocks.MOB_JAR,new Item.Settings().group(CropWonderWorking.CropWonderWorkingCoreGroup));
 
     public static void init() {
         register("sweed_seeds",SWEED_SEEDS);
@@ -33,9 +31,8 @@ public class CropWonderWorkingItems {
 
         register("hoes_mad",HOES_MAD);
         register("bowl_of_water",BOWL_OF_WATER);
-        register("mob_jar",MOB_JAR);
     }
     public static void register(String name, Item item) {
-        Registry.register(Registry.ITEM, CropWonderWorking.getId(name), item);
+        Registry.register(Registry.ITEM, CropWonderWorking.cowwIdentifier(name), item);
     }
 }

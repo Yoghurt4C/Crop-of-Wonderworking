@@ -1,6 +1,6 @@
 package mods.coww.blocks;
 
 public interface AttachableRedstoneBlock {
-     RedlonBlock getStem();
-     AttachedRedlonBlock getAttachedStem();
+     RedlonBlock coww_getStem();
+     AttachedRedlonBlock coww_getAttachedStem();
 }

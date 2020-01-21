@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 public class CropWonderWorking implements ModInitializer {
 
 	public static ItemGroup CropWonderWorkingCoreGroup = FabricItemGroupBuilder.build(
-			getId("core_group"),
+			cowwIdentifier("core_group"),
 			() -> new ItemStack(CropWonderWorkingItems.SWEED_SEEDS));
 
 	@Override
@@ -23,8 +23,8 @@ public class CropWonderWorking implements ModInitializer {
 
 	}
 
-	public static Identifier getId(String name) {
-		return new Identifier("coww", name);
-	}
 	public static final String modid="coww";
+	public static Identifier cowwIdentifier(String name) {
+		return new Identifier(modid, name);
+	}
 }
