@@ -1,7 +1,7 @@
 package mods.coww.recipes;
 
 import mods.coww.CropWonderWorking;
-import mods.coww.registry.CropWonderWorkingRecipes;
+import mods.coww.registry.cowwRecipes;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -137,7 +137,7 @@ public class CauldronRecipe implements Recipe<Inventory> {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return CropWonderWorkingRecipes.CAULDRON_RECIPE_SERIALIZER;
+        return cowwRecipes.CAULDRON_RECIPE_SERIALIZER;
     }
 
     @Override

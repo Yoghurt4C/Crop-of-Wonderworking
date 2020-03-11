@@ -5,9 +5,9 @@ import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.mixin.api.IBucketItem;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import mods.coww.entity.CropWonderWorkingCauldronBlockEntity;
+import mods.coww.entity.CauldronBlockEntity;
 import mods.coww.entity.IItemEntity;
-import mods.coww.registry.CropWonderWorkingItems;
+import mods.coww.registry.cowwItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -26,23 +26,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class CropWonderWorkingCauldronBlock extends CauldronBlock implements BlockEntityProvider {
+public class CauldronBlock extends net.minecraft.block.CauldronBlock implements BlockEntityProvider {
 
-    public CropWonderWorkingCauldronBlock(Settings settings) {
+    public CauldronBlock(Settings settings) {
         super(settings);
     }
 
     @SuppressWarnings("deprecated")
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
-        final CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) world.getBlockEntity(pos);
+        final CauldronBlockEntity cauldron = (CauldronBlockEntity) world.getBlockEntity(pos);
         if (cauldron!=null) { cauldron.handleInventory(cauldron,player,hand); }
         return ActionResult.SUCCESS;
     }
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        final CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) world.getBlockEntity(pos);
+        final CauldronBlockEntity cauldron = (CauldronBlockEntity) world.getBlockEntity(pos);
         if (cauldron != null) {
             FluidKey cauldronFluid = cauldron.fluid.getInvFluid(0).fluidKey;
             if (world.isClient) {
@@ -61,7 +61,7 @@ public class CropWonderWorkingCauldronBlock extends CauldronBlock implements Blo
                         else if (stack.getItem().equals(Items.BOWL)) {
                             if (level == 3) {
                                 stack.decrement(1);
-                                cauldron.spawnCraftingResult(world, pos, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER)); }
+                                cauldron.spawnCraftingResult(world, pos, new ItemStack(cowwItems.BOWL_OF_WATER)); }
                             cauldron.fluid.setInvFluid(0, FluidVolumeUtil.EMPTY, Simulation.ACTION);
                             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 0.1F, 10F);
                             world.setBlockState(pos,cauldron.getCachedState().with(LEVEL,0));
@@ -75,18 +75,14 @@ public class CropWonderWorkingCauldronBlock extends CauldronBlock implements Blo
 
     @Override
     public BlockEntity createBlockEntity(BlockView blockView) {
-        return new CropWonderWorkingCauldronBlockEntity();
+        return new CauldronBlockEntity();
     }
 
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) world.getBlockEntity(pos);
+        CauldronBlockEntity cauldron = (CauldronBlockEntity) world.getBlockEntity(pos);
         world.playLevelEvent(player, 2001, pos, getRawIdFromState(state));
         if (cauldron!=null)
         ItemScatterer.spawn(world,pos,cauldron);
     }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) { return new ItemStack(Items.CAULDRON); }
 }

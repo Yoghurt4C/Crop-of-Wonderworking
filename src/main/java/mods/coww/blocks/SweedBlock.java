@@ -1,6 +1,6 @@
 package mods.coww.blocks;
 
-import mods.coww.registry.CropWonderWorkingItems;
+import mods.coww.registry.cowwItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -23,7 +23,6 @@ public class SweedBlock extends CropWonderWorkingBlock {
 
     public SweedBlock(int delay, Settings settings){
         super(delay, settings);
-        this.setDefaultState((BlockState)((BlockState)this.stateManager.getDefaultState()).with(this.getAgeProperty(), 0));
     }
 
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
@@ -60,7 +59,7 @@ public class SweedBlock extends CropWonderWorkingBlock {
     @Override
     @Environment(EnvType.CLIENT)
     protected ItemConvertible getSeedsItem() {
-        return CropWonderWorkingItems.SWEED_SEEDS;
+        return cowwItems.SWEED_SEEDS;
     }
 
     public static final IntProperty AGE;

@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.Direction;
 
-public interface CropWonderWorkingCauldronInventory extends SidedInventory {
+public interface CauldronInventory extends SidedInventory {
     DefaultedList<ItemStack> getItems();
 
     int[] getInvAvailableSlots(Direction side);

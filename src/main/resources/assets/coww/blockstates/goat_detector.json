@@ -1,0 +1,16 @@
+{
+    "variants": {
+        "facing=up,powered=false": { "model": "coww:block/goat_detector", "x": 270 },
+        "facing=down,powered=false": { "model": "coww:block/goat_detector", "x": 90 },
+        "facing=north,powered=false": { "model": "coww:block/goat_detector" },
+        "facing=south,powered=false": { "model": "coww:block/goat_detector", "y": 180 },
+        "facing=west,powered=false": { "model": "coww:block/goat_detector", "y": 270 },
+        "facing=east,powered=false": { "model": "coww:block/goat_detector", "y": 90 },
+        "facing=up,powered=true": { "model": "coww:block/goat_detector_powered", "x": 270 },
+        "facing=down,powered=true": { "model": "coww:block/goat_detector_powered", "x": 90 },
+        "facing=north,powered=true": { "model": "coww:block/goat_detector_powered" },
+        "facing=south,powered=true": { "model": "coww:block/goat_detector_powered", "y": 180 },
+        "facing=west,powered=true": { "model": "coww:block/goat_detector_powered", "y": 270 },
+        "facing=east,powered=true": { "model": "coww:block/goat_detector_powered", "y": 90 }
+    }
+}

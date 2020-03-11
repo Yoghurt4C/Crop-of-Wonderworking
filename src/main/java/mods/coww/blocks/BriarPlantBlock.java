@@ -1,27 +1,22 @@
 package mods.coww.blocks;
 
-import mods.coww.registry.CropWonderWorkingBlocks;
-import mods.coww.registry.CropWonderWorkingItems;
+import mods.coww.registry.cowwBlocks;
+import mods.coww.registry.cowwItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.RavagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.state.property.Property;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -29,11 +24,8 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
 
 import java.util.Random;
 
@@ -73,20 +65,17 @@ public class BriarPlantBlock extends TallPlantBlock implements Fertilizable {
     }
 
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        super.scheduledTick(state, world, pos, random);
-        if (state.getBlock().equals(this)) {
-            if (world.getLightLevel(pos.up()) >= 9) {
-                int age = state.get(AGE);
-                if (state.get(HALF).equals(DoubleBlockHalf.UPPER)) {
-                    if (age < getMaxAge() && world.random.nextInt(growthDelay) == 0) {
-                        world.setBlockState(pos, this.withAge(age + 1).with(HALF, DoubleBlockHalf.UPPER));
-                        world.setBlockState(pos.down(), this.withAge(age + 1).with(HALF, DoubleBlockHalf.LOWER));
-                    }
-                } else {
-                    if (age < getMaxAge() && world.random.nextInt(growthDelay) == 0) {
-                        world.setBlockState(pos.up(), this.withAge(age + 1).with(HALF, DoubleBlockHalf.UPPER));
-                        world.setBlockState(pos, this.withAge(age + 1).with(HALF, DoubleBlockHalf.LOWER));
-                    }
+        if (world.getBaseLightLevel(pos, 0) >= 9) {
+            int age = state.get(AGE);
+            if (state.get(HALF).equals(DoubleBlockHalf.UPPER)) {
+                if (age < getMaxAge() && world.random.nextInt(growthDelay) == 0) {
+                    world.setBlockState(pos, this.withAge(age + 1).with(HALF, DoubleBlockHalf.UPPER));
+                    world.setBlockState(pos.down(), this.withAge(age + 1).with(HALF, DoubleBlockHalf.LOWER));
+                }
+            } else {
+                if (age < getMaxAge() && world.random.nextInt(growthDelay) == 0) {
+                    world.setBlockState(pos.up(), this.withAge(age + 1).with(HALF, DoubleBlockHalf.UPPER));
+                    world.setBlockState(pos, this.withAge(age + 1).with(HALF, DoubleBlockHalf.LOWER));
                 }
             }
         }
@@ -96,7 +85,7 @@ public class BriarPlantBlock extends TallPlantBlock implements Fertilizable {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (state.get(AGE).equals(getMaxAge())) {
             int count = world.random.nextInt(3)+1;
-            ItemScatterer.spawn(world,pos.getX(),pos.getY(),pos.getZ(),new ItemStack(CropWonderWorkingItems.BRIAR_FRUIT,count));
+            ItemScatterer.spawn(world,pos.getX(),pos.getY(),pos.getZ(),new ItemStack(cowwItems.BRIAR_FRUIT,count));
             if (state.get(HALF).equals(DoubleBlockHalf.UPPER)) {
                 world.setBlockState(pos, this.withAge(2).with(HALF, DoubleBlockHalf.UPPER));
                 world.setBlockState(pos.down(), this.withAge(2).with(HALF, DoubleBlockHalf.LOWER));
@@ -142,7 +131,7 @@ public class BriarPlantBlock extends TallPlantBlock implements Fertilizable {
 
     @Environment(EnvType.CLIENT)
     protected ItemConvertible getSeedsItem() {
-        return CropWonderWorkingBlocks.BRIAR;
+        return cowwBlocks.BRIAR;
     }
 
     @Environment(EnvType.CLIENT)

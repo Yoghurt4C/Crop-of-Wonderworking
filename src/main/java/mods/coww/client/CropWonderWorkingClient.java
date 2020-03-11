@@ -1,12 +1,15 @@
 package mods.coww.client;
 
 import mods.coww.client.models.ToddModel;
-import mods.coww.entity.CropWonderWorkingCauldronBlockEntityRenderer;
+import mods.coww.client.rendering.PowerBurstEntityRenderer;
+import mods.coww.entity.CauldronBlockEntityRenderer;
 import mods.coww.client.rendering.CauldronHUD;
+import mods.coww.registry.cowwEntities;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
@@ -15,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static mods.coww.registry.CropWonderWorkingBlocks.*;
+import static mods.coww.registry.cowwBlocks.*;
 
 
 @SuppressWarnings("unused")
@@ -30,25 +33,28 @@ public class CropWonderWorkingClient implements ClientModInitializer {
     public void onInitializeClient() {
         INSTANCE=this;
 
-        BlockRenderLayerMapImpl.INSTANCE.putBlocks(RenderLayer.getCutout(),
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
                 SWEED,
                 REDLON,
                 ATTACHED_REDLON,
                 LAZULLIA,
                 RAINBOW_CACTI,
                 BRIAR,
-                COWW_CAULDRON
+                COWW_CAULDRON,
+                WONDERWORKING_ANVIL
         );
 
-        BlockEntityRendererRegistry.INSTANCE.register(COWW_CAULDRON_BLOCKENTITY, CropWonderWorkingCauldronBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(COWW_CAULDRON_BLOCKENTITY, CauldronBlockEntityRenderer::new);
 
-        for (Boolean isToddDay : daysOfTheTodd){
-            if (isToddDay && random.nextInt(4)%4==0){ ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> ToddModel.ToddVariantProvider.INSTANCE); break; }
+        for (Boolean isToddDay : daysOfTheTodd) {
+            if (isToddDay && random.nextInt(4) % 4 == 0) { ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> ToddModel.ToddVariantProvider.INSTANCE); break; }
         }
 
-        //BlockRenderLayerMapImpl.INSTANCE.putBlocks(RenderLayer.getTranslucent(), );
+        //BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(), );
 
         HudRenderCallback.EVENT.register(delta -> this.cauldronHUD.renderHUD());
+
+        EntityRendererRegistry.INSTANCE.register(cowwEntities.POWER_BURST, (entityRenderDispatcher, context) -> new PowerBurstEntityRenderer(entityRenderDispatcher));
     }
 
     public void onInit(@NotNull MinecraftClient client){

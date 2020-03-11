@@ -23,14 +23,14 @@ import javax.annotation.Nonnull;
 
 import static net.minecraft.block.CauldronBlock.LEVEL;
 
-public class CropWonderWorkingCauldronBlockEntityRenderer extends BlockEntityRenderer<CropWonderWorkingCauldronBlockEntity> {
+public class CauldronBlockEntityRenderer extends BlockEntityRenderer<CauldronBlockEntity> {
 
-    public CropWonderWorkingCauldronBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
+    public CauldronBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
     @Override
-    public void render(@Nonnull CropWonderWorkingCauldronBlockEntity cauldron, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(@Nonnull CauldronBlockEntity cauldron, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (!cauldron.getWorld().isChunkLoaded(cauldron.getPos()))
             return;
         double bobOffset = Math.sin((cauldron.getWorld().getTime() + tickDelta) / 8.0) / 4.0;

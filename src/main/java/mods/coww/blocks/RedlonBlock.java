@@ -1,6 +1,6 @@
 package mods.coww.blocks;
 
-import mods.coww.registry.CropWonderWorkingItems;
+import mods.coww.registry.cowwItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -26,18 +26,20 @@ import java.util.Random;
 
 public class RedlonBlock extends PlantBlock implements Fertilizable {
     private final Block growableBlock;
+    private final int growthDelay;
     protected static final VoxelShape[] AGE_TO_SHAPE;
 
-    public RedlonBlock(Block growableBlock, Settings settings){
+    public RedlonBlock(Block growableBlock, int growthDelay, Settings settings){
         super(settings);
         this.growableBlock = growableBlock;
+        this.growthDelay=growthDelay;
         this.setDefaultState((BlockState)((BlockState)this.stateManager.getDefaultState()).with(AGE, 0));
     }
 
     @Nullable
     @Environment(EnvType.CLIENT)
     protected Item getPickItem() {
-        return CropWonderWorkingItems.REDLON_SEEDS;
+        return cowwItems.REDLON_SEEDS;
     }
 
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, EntityContext ePos) {
@@ -60,7 +62,7 @@ public class RedlonBlock extends PlantBlock implements Fertilizable {
                 } else {
                     Direction direction = Direction.Type.HORIZONTAL.random(random);
                     BlockPos blockPos = pos.offset(direction);
-                    if (world.getBlockState(blockPos).isAir()) {
+                    if (world.getBlockState(blockPos).isAir() && world.getRandom().nextInt(growthDelay)==0) {
                         world.setBlockState(blockPos, this.growableBlock.getDefaultState());
                         world.setBlockState(pos, ((AttachableRedstoneBlock)Blocks.REDSTONE_BLOCK).coww_getAttachedStem().getDefaultState().with(HorizontalFacingBlock.FACING, direction));
                     }
@@ -145,7 +147,6 @@ public class RedlonBlock extends PlantBlock implements Fertilizable {
             blockState.scheduledTick(world, pos, world.random);
         }
     }
-
 
     public Block getGrowableBlock() {
         return this.growableBlock;

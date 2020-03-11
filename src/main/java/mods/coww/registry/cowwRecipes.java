@@ -7,7 +7,7 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.registry.Registry;
 
-public class CropWonderWorkingRecipes {
+public class cowwRecipes {
     private static final String CAULDRON_RECIPE_ID = "cauldron";
     public static RecipeSerializer<CauldronRecipe> CAULDRON_RECIPE_SERIALIZER;
     public static RecipeType<CauldronRecipe> CAULDRON_RECIPE_TYPE;

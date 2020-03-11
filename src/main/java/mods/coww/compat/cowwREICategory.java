@@ -11,10 +11,9 @@ import me.shedaniel.rei.gui.widget.LabelWidget;
 import me.shedaniel.rei.gui.widget.RecipeBaseWidget;
 import me.shedaniel.rei.gui.widget.Widget;
 import mods.coww.recipes.CauldronRecipe;
-import mods.coww.registry.CropWonderWorkingBlocks;
+import mods.coww.registry.cowwBlocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class cowwREICategory<R extends CauldronRecipe> implements RecipeCategory
 
     @Override
     public EntryStack getLogo() {
-        return EntryStack.create(CropWonderWorkingBlocks.COWW_CAULDRON);
+        return EntryStack.create(cowwBlocks.COWW_CAULDRON);
     }
 
     @Override

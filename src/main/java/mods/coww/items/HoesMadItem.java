@@ -1,6 +1,6 @@
 package mods.coww.items;
 
-import mods.coww.registry.CropWonderWorkingSounds;
+import mods.coww.registry.cowwSounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -28,7 +28,7 @@ public class HoesMadItem extends HoeItem {
             BlockState blockState = TILLED_BLOCKS.get(world.getBlockState(blockPos).getBlock());
             if (blockState != null) {
                 PlayerEntity playerEntity = context.getPlayer();
-                world.playSound(playerEntity, blockPos, CropWonderWorkingSounds.HOES_MAD, SoundCategory.BLOCKS, 0.25F, 1.0F);
+                world.playSound(playerEntity, blockPos, cowwSounds.HOES_MAD, SoundCategory.BLOCKS, 0.25F, 1.0F);
                 for (int i=0;i<6;i++){spawnFX(world,blockPos,3);}
                 if (!world.isClient) {
                     world.setBlockState(blockPos, blockState, 11);

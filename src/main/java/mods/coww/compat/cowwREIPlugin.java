@@ -8,7 +8,7 @@ import me.shedaniel.rei.plugin.DefaultPlugin;
 import me.shedaniel.rei.plugin.information.DefaultInformationDisplay;
 import mods.coww.CropWonderWorking;
 import mods.coww.recipes.CauldronRecipe;
-import mods.coww.registry.CropWonderWorkingBlocks;
+import mods.coww.registry.cowwBlocks;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.util.version.VersionParsingException;
 import net.minecraft.recipe.Recipe;
@@ -42,7 +42,7 @@ public class cowwREIPlugin implements REIPluginV0 {
                 recipeHelper.registerDisplay(CAULDRON, new cowwREIDisplay<>((CauldronRecipe) recipe));
             }
         }
-        DefaultPlugin.registerInfoDisplay(DefaultInformationDisplay.createFromEntry(EntryStack.create(CropWonderWorkingBlocks.COWW_CAULDRON), new TranslatableText("block.coww.cauldron"))
+        DefaultPlugin.registerInfoDisplay(DefaultInformationDisplay.createFromEntry(EntryStack.create(cowwBlocks.COWW_CAULDRON), new TranslatableText("block.coww.cauldron"))
                 .lines(new TranslatableText("cauldron.coww.info_line_1"),
                         new TranslatableText("cauldron.coww.info_line_2")
                 ));
@@ -53,6 +53,6 @@ public class cowwREIPlugin implements REIPluginV0 {
         if (!ConfigObject.getInstance().isLoadingDefaultPlugin()) {
             return;
         }
-        recipeHelper.registerWorkingStations(CAULDRON, EntryStack.create(CropWonderWorkingBlocks.COWW_CAULDRON));
+        recipeHelper.registerWorkingStations(CAULDRON, EntryStack.create(cowwBlocks.COWW_CAULDRON));
     }
 }

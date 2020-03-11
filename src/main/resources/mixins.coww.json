@@ -7,7 +7,8 @@
     "ItemEntityMixin"
   ],
   "client": [
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "GoatDetectorItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1

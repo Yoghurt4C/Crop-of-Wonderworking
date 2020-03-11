@@ -1,6 +1,6 @@
 package mods.coww.blocks;
 
-import mods.coww.registry.CropWonderWorkingBlocks;
+import mods.coww.registry.cowwBlocks;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
@@ -29,7 +29,7 @@ public class RainbowCactiBlock extends CactusBlock {
         do {
             if (!var4.hasNext()) {
                 Block block = world.getBlockState(pos.down()).getBlock();
-                return (block == CropWonderWorkingBlocks.RAINBOW_CACTI || block == Blocks.SAND || block == Blocks.RED_SAND) && !world.getBlockState(pos.up()).getMaterial().isLiquid();
+                return (block == cowwBlocks.RAINBOW_CACTI || block == Blocks.SAND || block == Blocks.RED_SAND) && !world.getBlockState(pos.up()).getMaterial().isLiquid();
             }
             direction = (Direction)var4.next();
             BlockState blockState = world.getBlockState(pos.offset(direction));
@@ -42,7 +42,7 @@ public class RainbowCactiBlock extends CactusBlock {
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         if (entity instanceof ItemEntity) {
             if (!TagRegistry.item(new Identifier("c","dye_any")).contains(((ItemEntity)entity).getStack().getItem())){
-                if (!((ItemEntity)entity).getStack().getItem().equals(CropWonderWorkingBlocks.RAINBOW_CACTI.asItem())) {
+                if (!((ItemEntity)entity).getStack().getItem().equals(cowwBlocks.RAINBOW_CACTI.asItem())) {
                     entity.damage(DamageSource.CACTUS, 1.0F);
                 }
             }

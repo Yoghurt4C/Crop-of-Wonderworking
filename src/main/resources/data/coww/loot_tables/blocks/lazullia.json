@@ -27,6 +27,24 @@
           ]
         }
       ]
+    },
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "coww:lazullia_seeds"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "coww:lazullia",
+          "properties": {
+            "age": "7"
+          }
+        }
+      ]
     }
   ],
   "functions": [

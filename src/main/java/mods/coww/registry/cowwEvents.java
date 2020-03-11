@@ -1,5 +1,11 @@
 package mods.coww.registry;
 
+import mods.coww.api.callbacks.AddCollectorCallback;
+import mods.coww.api.callbacks.AddTankCallback;
+import mods.coww.api.callbacks.RemoveCollectorCallback;
+import mods.coww.api.callbacks.RemoveTankCallback;
+import mods.coww.api.power.PowerNetworkEvent;
+import mods.coww.power.internal.PowerNetworkSerializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropBlock;
@@ -18,7 +24,7 @@ import net.minecraft.world.RayTraceContext;
 
 import static mods.coww.client.rendering.FluidHandlingRaytrace.raytraceFromPlayer;
 
-public class CropWonderWorkingEvents {
+public class cowwEvents {
     public static void init(){
         UseBlockCallback.EVENT.register(((player, world, hand, blockHitResult) -> {
             ItemStack equipped=player.getStackInHand(hand);
@@ -30,9 +36,9 @@ public class CropWonderWorkingEvents {
                         if (!world.isClient) {
                             equipped.decrement(1);
                             if (equipped.isEmpty()) {
-                                player.setStackInHand(hand, new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER));
+                                player.setStackInHand(hand, new ItemStack(cowwItems.BOWL_OF_WATER));
                                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            } else player.inventory.offerOrDrop(world,new ItemStack(CropWonderWorkingItems.BOWL_OF_WATER));
+                            } else player.inventory.offerOrDrop(world,new ItemStack(cowwItems.BOWL_OF_WATER));
                         } return ActionResult.SUCCESS; }}}
             return ActionResult.PASS;
         }));
@@ -56,5 +62,10 @@ public class CropWonderWorkingEvents {
             }
             return ActionResult.PASS;
         }));
+
+        AddCollectorCallback.EVENT.register(be -> PowerNetworkSerializer.INSTANCE.onNetworkEvent(new PowerNetworkEvent(be, PowerNetworkEvent.PowerBlockType.COLLECTOR, PowerNetworkEvent.Action.ADD)));
+        RemoveCollectorCallback.EVENT.register(be -> PowerNetworkSerializer.INSTANCE.onNetworkEvent(new PowerNetworkEvent(be, PowerNetworkEvent.PowerBlockType.COLLECTOR, PowerNetworkEvent.Action.REMOVE)));
+        AddTankCallback.EVENT.register(be -> PowerNetworkSerializer.INSTANCE.onNetworkEvent(new PowerNetworkEvent(be, PowerNetworkEvent.PowerBlockType.TANK, PowerNetworkEvent.Action.ADD)));
+        RemoveTankCallback.EVENT.register(be -> PowerNetworkSerializer.INSTANCE.onNetworkEvent(new PowerNetworkEvent(be, PowerNetworkEvent.PowerBlockType.TANK, PowerNetworkEvent.Action.REMOVE)));
     }
 }

@@ -3,7 +3,7 @@
     "block.coww.rainbow_cacti": "Rainbow Cacti",
     "block.coww.cauldron": "Wonder-Cauldron",
     "block.coww.briar": "Briar",
-    "block.coww.mob_jar": "Mob Jar",
+    "block.coww.goat_detector": "Goat Detector",
 
     "item.coww.sweed_seeds": "Sweed Seeds",
     "item.coww.redlon_seeds": "Redlon Seeds",
@@ -27,8 +27,9 @@
     "cauldron.coww.info_line_1": "The Wonder-Cauldron is the main crafting mechanic in Crop of Wonderworking.",
     "cauldron.coww.info_line_2": "For more information, please refer to the Crop of Wonderworking Encyclopedia, courtesy of Patchouli.",
 
-    "mobjar.coww.empty_tooltip": "Empty",
-    "mobjar.coww.type_tooltip": "Mob Type",
-    "mobjar.coww.hp_tooltip": "Health",
-    "mobjar.coww.id_tooltip": "Entity ID"
+    "goat_detector.coww.hud_mode": "Goat Criterion",
+    "goat_detector.coww.hud_active": "Active",
+    "goat_detector.coww.hud_taggable": "Use Name Tag to change the",
+    "goat_detector.coww.hud_taggable_ps": "Goat Criterion to"
+
 }

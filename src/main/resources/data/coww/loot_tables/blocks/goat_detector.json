@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "coww:goat_detector",
+          "functions": [
+            {
+              "function": "copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "display",
+                  "target": "display",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:survives_explosion"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

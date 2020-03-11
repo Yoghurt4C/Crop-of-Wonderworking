@@ -2,7 +2,7 @@ package mods.coww.blocks;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import mods.coww.registry.CropWonderWorkingItems;
+import mods.coww.registry.cowwItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -60,7 +60,7 @@ public class AttachedRedlonBlock extends PlantBlock {
     }
 
     @Environment(EnvType.CLIENT)
-    protected Item getSeeds() { return CropWonderWorkingItems.REDLON_SEEDS; }
+    protected Item getSeeds() { return cowwItems.REDLON_SEEDS; }
 
     @Environment(EnvType.CLIENT)
     public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {

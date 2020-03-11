@@ -1,5 +1,6 @@
 package mods.coww;
 
+import mods.coww.api.power.PowerNetworkEvent;
 import mods.coww.registry.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -9,18 +10,20 @@ import net.minecraft.util.Identifier;
 
 public class CropWonderWorking implements ModInitializer {
 
-	public static ItemGroup CropWonderWorkingCoreGroup = FabricItemGroupBuilder.build(
+	public static ItemGroup cowwCoreGroup = FabricItemGroupBuilder.build(
 			cowwIdentifier("core_group"),
-			() -> new ItemStack(CropWonderWorkingItems.SWEED_SEEDS));
+			() -> new ItemStack(cowwItems.SWEED_SEEDS));
 
 	@Override
 	public void onInitialize() {
-		CropWonderWorkingBlocks.init();
-		CropWonderWorkingItems.init();
-		CropWonderWorkingSounds.init();
-		CropWonderWorkingRecipes.init();
-		CropWonderWorkingEvents.init();
+		cowwBlocks.init();
+		cowwEntities.init();
+		cowwItems.init();
+		cowwSounds.init();
+		cowwRecipes.init();
+		cowwEvents.init();
 
+		//once more, I have sinned
 	}
 
 	public static final String modid="coww";

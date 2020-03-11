@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "coww:block/wonderworking_anvil" },
+        "facing=east": { "model": "coww:block/wonderworking_anvil", "y": 90 },
+        "facing=south": { "model": "coww:block/wonderworking_anvil", "y": 180 },
+        "facing=west": { "model": "coww:block/wonderworking_anvil", "y": 270 }
+    }
+}

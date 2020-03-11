@@ -3,11 +3,11 @@ package mods.coww.client.rendering;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mods.coww.client.CropWonderWorkingClient;
-import mods.coww.entity.CropWonderWorkingCauldronBlockEntity;
+import mods.coww.entity.CauldronBlockEntity;
+import mods.coww.entity.GoatDetectorBlockEntity;
 import mods.coww.recipes.CauldronRecipe;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Optional;
 
+import static mods.coww.blocks.GoatDetectorBlock.POWERED;
 import static net.minecraft.block.CauldronBlock.LEVEL;
 
 public class CauldronHUD extends DrawableHelper {
@@ -53,8 +54,8 @@ public class CauldronHUD extends DrawableHelper {
                     BlockPos bpos = pos.getType() == HitResult.Type.BLOCK ? ((BlockHitResult) pos).getBlockPos() : null;
                     BlockState state = bpos != null ? client.world.getBlockState(bpos) : null;
                     BlockEntity blockEntity = bpos != null ? client.world.getBlockEntity(bpos) : null;
-                    if (blockEntity instanceof CropWonderWorkingCauldronBlockEntity) {
-                        CropWonderWorkingCauldronBlockEntity cauldron = (CropWonderWorkingCauldronBlockEntity) blockEntity;
+                    if (blockEntity instanceof CauldronBlockEntity) {
+                        CauldronBlockEntity cauldron = (CauldronBlockEntity) blockEntity;
                         String fluidString = (cauldron.fluid.getInvFluid(0).fluidKey.toString().split(" "))[2].replace("}","");
                         ClientPlayerEntity player = client.player;
                         if (client.player != null && cauldron.fluid.getInvFluid(0).fluidKey==FluidKeys.EMPTY
@@ -137,6 +138,30 @@ public class CauldronHUD extends DrawableHelper {
                                 client.getItemRenderer().renderGuiItemIcon(cauldron.getLastRecipeResult(),0,0);
                                 RenderSystem.popMatrix();
                             }
+                        }
+                    } else if (blockEntity instanceof GoatDetectorBlockEntity){
+                        GoatDetectorBlockEntity goatDetector = (GoatDetectorBlockEntity) blockEntity;
+                        String goatFormatted = goatDetector.goat.split(":")[1].replace("\"","").replace("}","");
+                        int baseOffset = xc+20;
+                        String s = I18n.translate("goat_detector.coww.hud_mode")
+                                +": \""+goatFormatted+"\"";
+                        client.textRenderer.drawWithShadow(s, baseOffset, yc-11,0xFFFFFF);
+                        if (goatDetector.getCachedState().get(POWERED)) {
+                            String s2 = I18n.translate("goat_detector.coww.hud_active") + "!";
+                            int offset = (baseOffset + (client.textRenderer.getStringWidth(s) / 2)) - (client.textRenderer.getStringWidth(s2) / 2);
+                            client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.REDSTONE_TORCH),offset-12,yc-6);
+                            client.textRenderer.drawWithShadow(s2, offset, yc, 0xFFFFFF);
+                        }
+                        ItemStack stack = client.player!=null ? client.player.getMainHandStack() : null;
+                        if (stack.getItem().equals(Items.NAME_TAG) && stack.hasTag()){
+                            String stackGoatFormatted = stack.getSubTag("display").get("Name").asString().split(":")[1].replace("\"","").replace("}","");
+                            String s3 = I18n.translate("goat_detector.coww.hud_taggable");
+                            String s3ps = I18n.translate("goat_detector.coww.hud_taggable_ps")+": \""
+                                    + stackGoatFormatted + "\"";
+                            int offset = xc-client.textRenderer.getStringWidth(s3)/2;
+                            client.getItemRenderer().renderGuiItemIcon(stack,xc-16-client.textRenderer.getStringWidth(s3)/2,yc+35);
+                            client.textRenderer.drawWithShadow(s3, offset+1, yc+35,0xFFFFFF);
+                            client.textRenderer.drawWithShadow(s3ps,offset+1,yc+45,0xFFFFFF);
                         }
                     }
                 }

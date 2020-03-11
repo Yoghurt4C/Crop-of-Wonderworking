@@ -4,7 +4,7 @@ import mods.coww.CropWonderWorking;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.registry.Registry;
 
-public class CropWonderWorkingSounds {
+public class cowwSounds {
     public static SoundEvent HOES_MAD;
 
     public static void init(){
