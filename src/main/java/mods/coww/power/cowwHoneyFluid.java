@@ -60,11 +60,6 @@ public abstract class cowwHoneyFluid extends BaseFluid {
     }
 
     @Override
-    protected boolean method_15777(FluidState fluidState, BlockView blockView, BlockPos blockPos, Fluid fluid, Direction direction) {
-        return direction == Direction.DOWN && !fluid.matches(FluidTags.WATER);
-    }
-
-    @Override
     public int getTickRate(WorldView worldView) {
         return 40;
     }
@@ -106,9 +101,19 @@ public abstract class cowwHoneyFluid extends BaseFluid {
             super.appendProperties(builder);
             builder.add(LEVEL);
         }
+
+        @Override
+        protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
+            return direction == Direction.DOWN && !fluid.matches(FluidTags.WATER);
+        }
     }
 
     public static class Still extends cowwHoneyFluid {
+        @Override
+        protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
+            return direction == Direction.DOWN && !fluid.matches(FluidTags.WATER);
+        }
+
         @Override
         public boolean isStill(FluidState fluidState) {
             return true;

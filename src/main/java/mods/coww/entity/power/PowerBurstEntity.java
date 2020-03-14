@@ -8,7 +8,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.network.packet.EntitySpawnS2CPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ProjectileUtil;
@@ -20,6 +19,7 @@ import net.minecraft.entity.thrown.ThrownEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -97,7 +97,7 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
         this.fake = fake;
 
         setBurstSourceCoords(tile.getPos());
-        setPositionAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5, 0, 0);
+        refreshPositionAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5, 0, 0);
         yaw = -(spreader.getRotationX() + 90F);
         pitch = spreader.getRotationY();
 
@@ -142,7 +142,7 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
             this.setVelocity(this.getVelocity().multiply((double)(this.random.nextFloat() * 0.2F), (double)(this.random.nextFloat() * 0.2F), (double)(this.random.nextFloat() * 0.2F)));
         }
 
-        Box axisalignedbb = this.getBoundingBox().expand(this.getVelocity().getX(), this.getVelocity().getY(), this.getVelocity().getZ()).expand(1.0D);
+        Box box = this.getBoundingBox().stretch(this.getVelocity()).expand(1.0D);
 
 		/* Botania - no ignoreEntity stuff at all
 		for(Entity entity : this.world.getEntitiesInAABBexcluding(this, axisalignedbb, (p_213881_0_) -> {
@@ -160,7 +160,7 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
 		}
 		*/
 
-        HitResult raytraceresult = ProjectileUtil.getCollision(this, axisalignedbb, (entityCollisionPredicate) -> {
+        HitResult hitResult = ProjectileUtil.getCollision(this, box, (entityCollisionPredicate) -> {
             return !entityCollisionPredicate.isSpectator() && entityCollisionPredicate.collides(); // && p_213880_1_ != this.ignoreEntity;
         }, RayTraceContext.ShapeType.OUTLINE, true);
 		/*
@@ -169,23 +169,22 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
 		}
 		*/
 
-        if (raytraceresult.getType() != HitResult.Type.MISS) {
-            if (raytraceresult.getType() == HitResult.Type.BLOCK && this.world.getBlockState(((BlockHitResult)raytraceresult).getBlockPos()).getBlock() == Blocks.NETHER_PORTAL) {
-                this.setInNetherPortal(((BlockHitResult)raytraceresult).getBlockPos());
+        if (hitResult.getType() != HitResult.Type.MISS) {
+            if (hitResult.getType() == HitResult.Type.BLOCK && this.world.getBlockState(((BlockHitResult)hitResult).getBlockPos()).getBlock() == Blocks.NETHER_PORTAL) {
+                this.setInNetherPortal(((BlockHitResult)hitResult).getBlockPos());
             } else {
-                this.onCollision(raytraceresult);
+                this.onCollision(hitResult);
             }
         }
 
         Vec3d vec3d = this.getVelocity();
-        this.trackedX += vec3d.x;
-        this.trackedY += vec3d.y;
-        this.trackedZ += vec3d.z;
+        double x = this.getX() + vec3d.x;
+        double y = this.getY() + vec3d.y;
+        double z = this.getZ() + vec3d.z;
         float f = MathHelper.sqrt(squaredHorizontalLength(vec3d));
-        this.yaw = (float)(MathHelper.atan2(vec3d.x, vec3d.z) * (double)(180F / (float)Math.PI));
+        this.yaw = (float)(MathHelper.atan2(vec3d.x, vec3d.z) * 57.2957763671875D);
 
-        for(this.pitch = (float)(MathHelper.atan2(vec3d.y, (double)f) * (double)(180F / (float)Math.PI)); this.pitch - this.prevPitch < -180.0F; this.prevPitch -= 360.0F) {
-            ;
+        for(this.pitch = (float)(MathHelper.atan2(vec3d.y, (double)f) * 57.2957763671875D); this.pitch - this.prevPitch < -180.0F; this.prevPitch -= 360.0F) {
         }
 
         while(this.pitch - this.prevPitch >= 180.0F) {
@@ -202,16 +201,16 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
 
         this.pitch = MathHelper.lerp(0.2F, this.prevPitch, this.pitch);
         this.yaw = MathHelper.lerp(0.2F, this.prevYaw, this.yaw);
-        float f1;
-        if (this.isInWater()) {
+        float k;
+        if (this.isSubmergedInWater()) {
             for(int i = 0; i < 4; ++i) {
-                float f2 = 0.25F;
-                this.world.addParticle(ParticleTypes.BUBBLE, this.trackedX - vec3d.x * 0.25D, this.trackedY - vec3d.y * 0.25D, this.trackedZ - vec3d.z * 0.25D, vec3d.x, vec3d.y, vec3d.z);
+                float h = 0.25F;
+                this.world.addParticle(ParticleTypes.BUBBLE, x - vec3d.x * 0.25D, y - vec3d.y * 0.25D, z - vec3d.z * 0.25D, vec3d.x, vec3d.y, vec3d.z);
             }
 
-            f1 = 0.8F;
+            k = 0.8F;
         } else {
-            f1 = 0.99F;
+            k = 0.99F;
         }
 
         // Botania - no drag this.setMotion(vec3d.scale((double)f1));
@@ -220,7 +219,7 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
             this.setVelocity(vec3d1.x, vec3d1.y - (double)this.getGravity(), vec3d1.z);
         }
 
-        this.setPosition(this.trackedX, this.trackedY, this.trackedZ);
+        this.setPos(x,y,z);
     }
 
     @Override
@@ -267,12 +266,12 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
     @Override
     @Environment(EnvType.CLIENT)
     public void updateTrackedPositionAndAngles(double x, double y, double z, float yaw, float pitch, int interpolationSteps, boolean interpolate) {
-        setPosition(x, y, z);
+        setPos(x, y, z);
         setRotation(yaw, pitch);
     }
 
     @Override
-    public boolean isInWater() {
+    public boolean isSubmergedInWater() {
         return false;
     }
 
@@ -289,7 +288,7 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
         this.noParticles = noParticles;
 
         int iterations = 0;
-        while(isAlive()
+        while(isAlive() && iterations < 200
                 //&& iterations < ConfigHandler.COMMON.spreaderTraceTime.get()
         ) {
             tick();
@@ -414,11 +413,15 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
 
                 double luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b; // Standard relative luminance calculation
 
-                long savedPosX = trackedX;
-                long savedPosY = trackedY;
-                long savedPosZ = trackedZ;
+                //double savedPosX = this.getX();
+                //double savedPosY = this.getY();
+                //double savedPosZ = this.getZ();
+                Vec3d savedPos = new Vec3d(this.getX(),this.getY(),this.getZ());
 
-                Vec3d currentPos = new Vec3d(this.trackedX,this.trackedY,this.trackedZ);
+                Vec3d currentPos = new Vec3d(this.getX(),this.getY(),this.getZ());
+                double x = this.getX();
+                double y = this.getY();
+                double z = this.getZ();
                 Vec3d oldPos = new Vec3d(prevX, prevY, prevZ);
                 Vec3d diffVec = oldPos.subtract(currentPos);
                 Vec3d diffVecNorm = diffVec.normalize();
@@ -433,27 +436,27 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
                     }
                     size = osize + ((float) Math.random() - 0.5F) * 0.065F + (float) Math.sin(new Random(getUuid().getMostSignificantBits()).nextInt(9001)) * 0.4F;
                     //WispParticleData data = WispParticleData.wisp(0.2F * size, r, g, b, depth);
-                    world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, trackedX, trackedY, trackedZ,
+                    world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, getX(), getY(), getZ(),
                             (float) -getVelocity().getX() * 0.01F,
                             (float) -getVelocity().getY() * 0.01F,
                             (float) -getVelocity().getZ() * 0.01F);
 
-                    trackedX += diffVecNorm.x * distance;
-                    trackedY += diffVecNorm.y * distance;
-                    trackedZ += diffVecNorm.z * distance;
+                    x += diffVecNorm.x * distance;
+                    y += diffVecNorm.y * distance;
+                    z += diffVecNorm.z * distance;
 
-                    currentPos = new Vec3d(this.trackedX,this.trackedY,this.trackedZ);
+                    currentPos = new Vec3d(x,y,z);
                     diffVec = oldPos.subtract(currentPos);
                     //if(getPersistentData().contains(ItemTinyPlanet.TAG_ORBIT))
                         //break;
                 } while(Math.abs(Math.sqrt(diffVec.x * diffVec.x + diffVec.y * diffVec.y + diffVec.z * diffVec.z)) > distance);
 
                 //WispParticleData data = WispParticleData.wisp(0.1F * size, or, og, ob, depth);
-                world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, trackedX, trackedY, trackedZ, (float) (Math.random() - 0.5F) * 0.06F, (float) (Math.random() - 0.5F) * 0.06F, (float) (Math.random() - 0.5F) * 0.06F);
+                world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, x, y, z, (float) (Math.random() - 0.5F) * 0.06F, (float) (Math.random() - 0.5F) * 0.06F, (float) (Math.random() - 0.5F) * 0.06F);
 
-                trackedX = savedPosX;
-                trackedY = savedPosY;
-                trackedZ = savedPosZ;
+                x = savedPos.x;
+                y = savedPos.y;
+                z = savedPos.z;
             //}
         }
     }
@@ -520,10 +523,10 @@ public class PowerBurstEntity extends ThrownEntity implements PowerBurstInterfac
                 //if(!ConfigHandler.CLIENT.subtlePowerSystem.get())
                     for(int i = 0; i < 4; i++) {
                         //WispParticleData data = WispParticleData.wisp(0.15F * size, r, g, b);
-                        world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, trackedX, trackedY, trackedZ, (float) (Math.random() - 0.5F) * 0.04F, (float) (Math.random() - 0.5F) * 0.04F, (float) (Math.random() - 0.5F) * 0.04F);
+                        world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, getX(), getY(), getZ(), (float) (Math.random() - 0.5F) * 0.04F, (float) (Math.random() - 0.5F) * 0.04F, (float) (Math.random() - 0.5F) * 0.04F);
                     }
                 //SparkleParticleData data = SparkleParticleData.sparkle((float) 4, r, g, b, 2);
-                world.addParticle(ParticleTypes.ENTITY_EFFECT, (float) trackedX, (float) trackedY, (float) trackedZ, 0, 0, 0);
+                world.addParticle(ParticleTypes.ENTITY_EFFECT, (float) getX(), (float) getY(), (float) getZ(), 0, 0, 0);
             }
 
             remove();

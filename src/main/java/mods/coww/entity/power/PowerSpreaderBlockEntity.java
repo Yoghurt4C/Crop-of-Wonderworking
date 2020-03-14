@@ -12,12 +12,12 @@ import mods.coww.power.internal.PowerNetworkSerializer;
 import mods.coww.registry.cowwBlocks;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.thrown.ThrownEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -118,13 +118,13 @@ public class PowerSpreaderBlockEntity extends BlockEntity implements AnvilInvent
     @Override
     public void markRemoved() {
         super.markRemoved();
-        //PowerNetworkEvent.INSTANCE.removeCollector(this);
+        PowerNetworkEvent.INSTANCE.removeCollector(this);
     }
 
     //@Override
     public void onChunkUnloaded() {
         //super.onChunkUnloaded();
-        PowerNetworkEvent.INSTANCE.removeCollector(this);
+        //PowerNetworkEvent.INSTANCE.removeCollector(this);
     }
 
     @Override
@@ -132,8 +132,7 @@ public class PowerSpreaderBlockEntity extends BlockEntity implements AnvilInvent
         boolean inNetwork = PowerNetworkSerializer.INSTANCE.isCollectorIn(this);
         boolean wasInNetwork = inNetwork;
         if(!inNetwork && !isRemoved()) {
-            //PowerNetworkEvent.INSTANCE.addCollector(this);
-            AddCollectorCallback.EVENT.invoker().addCollector(this);
+            PowerNetworkEvent.INSTANCE.addCollector(this);
         }
 
         boolean redstone = false;

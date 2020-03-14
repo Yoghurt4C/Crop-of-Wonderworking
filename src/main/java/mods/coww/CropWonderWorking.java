@@ -22,6 +22,7 @@ public class CropWonderWorking implements ModInitializer {
 		cowwSounds.init();
 		cowwRecipes.init();
 		cowwEvents.init();
+		cowwParticles.init();
 
 		//once more, I have sinned
 	}

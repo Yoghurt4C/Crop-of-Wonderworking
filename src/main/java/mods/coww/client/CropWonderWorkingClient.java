@@ -1,20 +1,31 @@
 package mods.coww.client;
 
+import mods.coww.CropWonderWorking;
 import mods.coww.client.models.ToddModel;
 import mods.coww.client.rendering.PowerBurstEntityRenderer;
 import mods.coww.entity.CauldronBlockEntityRenderer;
 import mods.coww.client.rendering.CauldronHUD;
+import mods.coww.particles.HexagonParticle;
 import mods.coww.registry.cowwEntities;
+import mods.coww.registry.cowwParticles;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +66,8 @@ public class CropWonderWorkingClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(delta -> this.cauldronHUD.renderHUD());
 
         EntityRendererRegistry.INSTANCE.register(cowwEntities.POWER_BURST, (entityRenderDispatcher, context) -> new PowerBurstEntityRenderer(entityRenderDispatcher));
+
+        ParticleFactoryRegistry.getInstance().register(cowwParticles.HEXAGON_PARTICLE_EFFECT, HexagonParticle.FACTORY::new);
     }
 
     public void onInit(@NotNull MinecraftClient client){

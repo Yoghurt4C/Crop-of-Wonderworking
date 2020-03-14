@@ -5,7 +5,7 @@ import mods.coww.power.internal.PowerNetworkSerializer;
 import net.minecraft.block.entity.BlockEntity;
 
 public class PowerNetworkEvent implements AddCollectorCallback, RemoveCollectorCallback, AddTankCallback, RemoveTankCallback {
-    public static PowerNetworkEvent INSTANCE;
+    public static final PowerNetworkEvent INSTANCE = new PowerNetworkEvent();
     public final BlockEntity be;
     public final PowerBlockType type;
     public final Action action;
@@ -14,6 +14,12 @@ public class PowerNetworkEvent implements AddCollectorCallback, RemoveCollectorC
         this.be = be;
         this.type = type;
         this.action = action;
+    }
+
+    public PowerNetworkEvent(){
+        this.be=null;
+        this.type=null;
+        this.action=null;
     }
 
     public void addCollector(BlockEntity be) { AddCollectorCallback.EVENT.invoker().addCollector(be); }

@@ -8,16 +8,16 @@ package mods.coww.api.power;
 import net.minecraft.block.entity.BlockEntity;
 
 public class BlockEntitySignature {
-    private final BlockEntity tile;
+    private final BlockEntity be;
     private final boolean remoteWorld;
 
-    public BlockEntitySignature(BlockEntity tile, boolean remoteWorld) {
-        this.tile = tile;
+    public BlockEntitySignature(BlockEntity be, boolean remoteWorld) {
+        this.be = be;
         this.remoteWorld = remoteWorld;
     }
 
     public BlockEntity getTile() {
-        return tile;
+        return be;
     }
 
     public boolean isRemote() {
@@ -26,13 +26,13 @@ public class BlockEntitySignature {
 
     @Override
     public int hashCode() {
-        return Boolean.hashCode(remoteWorld) ^ System.identityHashCode(tile);
+        return Boolean.hashCode(remoteWorld) ^ System.identityHashCode(be);
     }
 
     @Override
     public boolean equals(Object o) {
         return o instanceof BlockEntitySignature
-                && tile == ((BlockEntitySignature) o).tile
+                && be == ((BlockEntitySignature) o).be
                 && remoteWorld == ((BlockEntitySignature) o).remoteWorld;
     }
 }

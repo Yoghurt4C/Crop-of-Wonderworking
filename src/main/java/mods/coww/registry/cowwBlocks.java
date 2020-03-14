@@ -85,7 +85,7 @@ public class cowwBlocks {
     }
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> build) {
-        return Registry.register(Registry.BLOCK_ENTITY, CropWonderWorking.cowwIdentifier(name), build);
+        return Registry.register(Registry.BLOCK_ENTITY_TYPE, CropWonderWorking.cowwIdentifier(name), build);
     }
 
     private static Fluid register(String name, Fluid fluid){

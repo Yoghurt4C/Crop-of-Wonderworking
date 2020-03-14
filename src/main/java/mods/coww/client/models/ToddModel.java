@@ -139,7 +139,12 @@ public class ToddModel implements UnbakedModel {
         }
 
         @Override
-        public boolean hasDepthInGui(){
+        public boolean hasDepth() {
+            return false;
+        }
+
+        @Override
+        public boolean isSideLit() {
             return false;
         }
 
